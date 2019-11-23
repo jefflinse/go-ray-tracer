@@ -10,7 +10,7 @@ type Tuple struct {
 	X float64
 	Y float64
 	Z float64
-	T float64
+	W float64
 }
 
 // NewPoint creates a new Point.
@@ -28,7 +28,7 @@ func (t *Tuple) Equals(other *Tuple) bool {
 	return eq(t.X, other.X) &&
 		eq(t.Y, other.Y) &&
 		eq(t.Z, other.Z) &&
-		eq(t.T, other.T)
+		eq(t.W, other.W)
 }
 
 // Add creates a new Tuple by adding the values of this tuple with another one.
@@ -37,7 +37,7 @@ func (t *Tuple) Add(other *Tuple) *Tuple {
 		t.X + other.X,
 		t.Y + other.Y,
 		t.Z + other.Z,
-		t.T + other.T,
+		t.W + other.W,
 	}
 }
 
@@ -47,18 +47,18 @@ func (t *Tuple) Subtract(other *Tuple) *Tuple {
 		t.X - other.X,
 		t.Y - other.Y,
 		t.Z - other.Z,
-		t.T - other.T,
+		t.W - other.W,
 	}
 }
 
 // Negate creates a new Tuple by negating the values of this tuple.
 func (t *Tuple) Negate() *Tuple {
-	return &Tuple{-t.X, -t.Y, -t.Z, -t.T}
+	return &Tuple{-t.X, -t.Y, -t.Z, -t.W}
 }
 
 // Multiply creates a new Tuple by multiplying this tuple by a scalar.
 func (t *Tuple) Multiply(s float64) *Tuple {
-	return &Tuple{t.X * s, t.Y * s, t.Z * s, t.T * s}
+	return &Tuple{t.X * s, t.Y * s, t.Z * s, t.W * s}
 }
 
 // Divide creates a new Tuple by dividing this tuple by a scalar.
@@ -74,12 +74,12 @@ func (t *Tuple) Magnitude() float64 {
 // Normalize creates a new Tuple by dividing each of this tuple's values by its magnitude.
 func (t *Tuple) Normalize() *Tuple {
 	mag := t.Magnitude()
-	return &Tuple{t.X / mag, t.Y / mag, t.Z / mag, t.T}
+	return &Tuple{t.X / mag, t.Y / mag, t.Z / mag, t.W}
 }
 
 // Dot returns the dot product of this vector and another.
 func (t *Tuple) Dot(other *Tuple) float64 {
-	return (t.X * other.X) + (t.Y * other.Y) + (t.Z * other.Z) + (t.T * other.T)
+	return (t.X * other.X) + (t.Y * other.Y) + (t.Z * other.Z) + (t.W * other.W)
 }
 
 // Cross returns the cross product of this vector and another.
@@ -88,11 +88,11 @@ func (t *Tuple) Cross(other *Tuple) *Tuple {
 		(t.Y * other.Z) - (t.Z * other.Y),
 		(t.Z * other.X) - (t.X * other.Z),
 		(t.X * other.Y) - (t.Y * other.X),
-		t.T,
+		t.W,
 	}
 }
 
 // String returns a string representation of a Tuple.
 func (t *Tuple) String() string {
-	return fmt.Sprintf("(%f,%f,%f)[%f]", t.X, t.Y, t.Z, t.T)
+	return fmt.Sprintf("(%f,%f,%f)[%f]", t.X, t.Y, t.Z, t.W)
 }

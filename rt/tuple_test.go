@@ -12,7 +12,7 @@ func TestNewPoint(t *testing.T) {
 	assert.Equal(t, p.X, 4.3)
 	assert.Equal(t, p.Y, -4.2)
 	assert.Equal(t, p.Z, 3.1)
-	assert.Equal(t, p.T, 1.0)
+	assert.Equal(t, p.W, 1.0)
 }
 
 func TestNewVector(t *testing.T) {
@@ -20,7 +20,7 @@ func TestNewVector(t *testing.T) {
 	assert.Equal(t, p.X, 4.3)
 	assert.Equal(t, p.Y, -4.2)
 	assert.Equal(t, p.Z, 3.1)
-	assert.Equal(t, p.T, 0.0)
+	assert.Equal(t, p.W, 0.0)
 }
 
 func TestTuple_Equals(t *testing.T) {
