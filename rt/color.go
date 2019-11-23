@@ -1,5 +1,10 @@
 package rt
 
+import (
+	"fmt"
+	"math"
+)
+
 // A Color is a tuple of red, green, blue.
 type Color struct {
 	*Tuple
@@ -48,4 +53,19 @@ func (c *Color) Multiply(s float64) *Color {
 // Blend creates a new Color by blending this color with another color using the Hadamard product.
 func (c *Color) Blend(other *Color) *Color {
 	return NewColor(c.X*other.X, c.Y*other.Y, c.Z*other.Z)
+}
+
+// ToPPM retuns the PPM-formatted string representation of a Color.
+func (c *Color) ToPPM() string {
+	if c == nil {
+		return "0 0 0"
+	}
+
+	max := float64(255)
+	return fmt.Sprintf(
+		"%d %d %d",
+		int(math.Ceil(clamp(c.X*max, 0, max))),
+		int(math.Ceil(clamp(c.Y*max, 0, max))),
+		int(math.Ceil(clamp(c.Z*max, 0, max))),
+	)
 }

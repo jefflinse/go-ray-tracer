@@ -35,3 +35,14 @@ func TestColor_Blend(t *testing.T) {
 	c2 := NewColor(.9, 1, .1)
 	assert.True(t, c1.Blend(c2).Equals(NewColor(.9, .2, .04)))
 }
+
+func TestColor_ToPPM(t *testing.T) {
+	var c *Color
+	assert.Equal(t, "0 0 0", c.ToPPM())
+	c = NewColor(0, 0, 0)
+	assert.Equal(t, "0 0 0", c.ToPPM())
+	c = NewColor(1, 1, 1)
+	assert.Equal(t, "255 255 255", c.ToPPM())
+	c = NewColor(.5, .3, .1)
+	assert.Equal(t, "128 77 26", c.ToPPM())
+}

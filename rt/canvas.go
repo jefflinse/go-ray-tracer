@@ -1,5 +1,10 @@
 package rt
 
+import (
+	"fmt"
+	"strings"
+)
+
 // A Canvas is a grid of pixels.
 type Canvas struct {
 	width  int
@@ -29,10 +34,35 @@ func (c *Canvas) Height() int {
 
 // PixelAt returns the Color at the specified position.
 func (c *Canvas) PixelAt(x int, y int) *Color {
-	return c.pixels[x][y]
+	return c.pixels[y][x]
 }
 
 // WritePixel writes a Color value to the specified position.
 func (c *Canvas) WritePixel(x int, y int, color *Color) {
-	c.pixels[x][y] = color
+	c.pixels[y][x] = color
+}
+
+// ToPPM produces a PPM-formatted string from this canvas.
+func (c *Canvas) ToPPM() string {
+	builder := strings.Builder{}
+
+	// write headers
+	builder.WriteString("P3\n")
+	builder.WriteString(fmt.Sprintf("%d %d\n", c.width, c.height))
+	builder.WriteString("255\n")
+
+	// write pixels
+	for _, row := range c.pixels {
+		for _, color := range row {
+			pixelValue := color.ToPPM()
+			if (builder.Len()%70)+len(pixelValue) >= 70 {
+				builder.WriteByte('\n')
+			}
+			builder.WriteString(fmt.Sprintf("%s ", color.ToPPM()))
+		}
+	}
+
+	builder.WriteByte('\n')
+
+	return builder.String()
 }
