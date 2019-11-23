@@ -8,20 +8,20 @@ import (
 )
 
 type environment struct {
-	Gravity *rt.Tuple
-	Wind    *rt.Tuple
+	Gravity rt.Tuple
+	Wind    rt.Tuple
 }
 
 type projectile struct {
-	Position *rt.Tuple
-	Velocity *rt.Tuple
+	Position rt.Tuple
+	Velocity rt.Tuple
 }
 
 func main() {
 	canvas := rt.NewCanvas(900, 550)
 	env := &environment{rt.NewVector(0, -0.1, 0), rt.NewVector(-0.01, 0, 0)}
 	p := &projectile{rt.NewPoint(0, 1, 0), rt.NewVector(1, 1.8, 0).Normalize().Multiply(11.25)}
-	for p.Position.Y > 0 {
+	for p.Position.Y() > 0 {
 		x, y := getPixelCoordinates(canvas, p)
 		if x > 0 && x < canvas.Width() && y > 0 && y < canvas.Height() {
 			canvas.WritePixel(x, y, rt.NewColor(1, 0, 0))
@@ -33,8 +33,8 @@ func main() {
 }
 
 func getPixelCoordinates(canvas *rt.Canvas, p *projectile) (int, int) {
-	x := int(math.Floor(p.Position.X))
-	y := canvas.Height() - int(math.Floor(p.Position.Y))
+	x := int(math.Floor(p.Position.X()))
+	y := canvas.Height() - int(math.Floor(p.Position.Y()))
 	return x, y
 }
 
