@@ -104,3 +104,21 @@ func TestShearing(t *testing.T) {
 	m = NewShearing(0, 0, 0, 0, 0, 1)
 	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(2, 3, 7)))
 }
+
+func TestSqeuentialTransformations(t *testing.T) {
+	p := NewPoint(1, 0, 1)
+	rotate := NewRotationX(math.Pi / 2)
+	scale := NewScaling(5, 5, 5)
+	translate := NewTranslation(10, 5, 7)
+
+	p2 := rotate.MultiplyTuple(p)
+	assert.True(t, p2.Equals(NewPoint(1, -1, 0)))
+	p3 := scale.MultiplyTuple(p2)
+	assert.True(t, p3.Equals(NewPoint(5, -5, 0)))
+	p4 := translate.MultiplyTuple(p3)
+	assert.True(t, p4.Equals(NewPoint(15, 0, 7)))
+
+	// chained transformations are applied in reverse order
+	chained := translate.Multiply(scale).Multiply(rotate)
+	assert.True(t, chained.MultiplyTuple(p).Equals(NewPoint(15, 0, 7)))
+}
