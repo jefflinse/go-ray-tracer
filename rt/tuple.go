@@ -1,6 +1,7 @@
-package raytracer
+package rt
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -89,4 +90,9 @@ func (t *Tuple) Cross(other *Tuple) *Tuple {
 		(t.X * other.Y) - (t.Y * other.X),
 		t.T,
 	}
+}
+
+// String returns a string representation of a Tuple.
+func (t *Tuple) String() string {
+	return fmt.Sprintf("(%f,%f,%f)[%f]", t.X, t.Y, t.Z, t.T)
 }

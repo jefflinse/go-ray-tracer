@@ -1,4 +1,4 @@
-package raytracer
+package rt
 
 import (
 	"math"
@@ -127,4 +127,9 @@ func TestTuple_Cross(t *testing.T) {
 	v2 := NewVector(2, 3, 4)
 	assert.True(t, v1.Cross(v2).Equals(NewVector(-1, 2, -1)))
 	assert.True(t, v2.Cross(v1).Equals(NewVector(1, -2, 1)))
+}
+
+func TestTuple_String(t *testing.T) {
+	t1 := &Tuple{1, 2, 3, 4}
+	assert.Equal(t, "(1.000000,2.000000,3.000000)[4.000000]", t1.String())
 }
