@@ -1,0 +1,106 @@
+package rt
+
+import (
+	"math"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestTranslation(t *testing.T) {
+	tm := NewTranslation(5, -3, 2)
+	p := NewPoint(-3, 4, 5)
+
+	// translate a point
+	assert.True(t, tm.MultiplyTuple(p).Equals(NewPoint(2, 1, 7)))
+
+	// translate a point (inverse)
+	itm := tm.Inverse()
+	assert.True(t, itm.MultiplyTuple(p).Equals(NewPoint(-8, 7, 3)))
+
+	// translation does not affect vectors
+	v := NewVector(-3, 4, 5)
+	assert.True(t, tm.MultiplyTuple(v).Equals(v))
+}
+
+func TestScaling(t *testing.T) {
+	sm := NewScaling(2, 3, 4)
+	p := NewPoint(-4, 6, 8)
+
+	// scale a point
+	assert.True(t, sm.MultiplyTuple(p).Equals(NewPoint(-8, 18, 32)))
+
+	// scale a vector
+	v := NewVector(-4, 6, 8)
+	assert.True(t, sm.MultiplyTuple(v).Equals(NewVector(-8, 18, 32)))
+
+	// scale a vector (inverse)
+	ism := sm.Inverse()
+	assert.True(t, ism.MultiplyTuple(v).Equals(NewVector(-2, 2, 2)))
+
+	// reflection is scaling by negative value
+	sm = NewScaling(-1, 1, 1)
+	p = NewPoint(2, 3, 4)
+	assert.True(t, sm.MultiplyTuple(p).Equals(NewPoint(-2, 3, 4)))
+}
+
+func TestRotationX(t *testing.T) {
+	p := NewPoint(0, 1, 0)
+	halfQuarter := NewRotationX(math.Pi / 4)
+	fullQuarter := NewRotationX(math.Pi / 2)
+	assert.True(t, halfQuarter.MultiplyTuple(p).Equals(NewPoint(0, math.Sqrt2/2, math.Sqrt2/2)))
+	assert.True(t, fullQuarter.MultiplyTuple(p).Equals(NewPoint(0, 0, 1)))
+
+	// inverse rotation
+	assert.True(t, halfQuarter.Inverse().MultiplyTuple(p).Equals(NewPoint(0, math.Sqrt2/2, -math.Sqrt2/2)))
+}
+
+func TestRotationY(t *testing.T) {
+	p := NewPoint(0, 0, 1)
+	halfQuarter := NewRotationY(math.Pi / 4)
+	fullQuarter := NewRotationY(math.Pi / 2)
+	assert.True(t, halfQuarter.MultiplyTuple(p).Equals(NewPoint(math.Sqrt2/2, 0, math.Sqrt2/2)))
+	assert.True(t, fullQuarter.MultiplyTuple(p).Equals(NewPoint(1, 0, 0)))
+
+	// inverse rotation
+	assert.True(t, halfQuarter.Inverse().MultiplyTuple(p).Equals(NewPoint(-math.Sqrt2/2, 0, math.Sqrt2/2)))
+}
+
+func TestRotationZ(t *testing.T) {
+	p := NewPoint(0, 1, 0)
+	halfQuarter := NewRotationZ(math.Pi / 4)
+	fullQuarter := NewRotationZ(math.Pi / 2)
+	assert.True(t, halfQuarter.MultiplyTuple(p).Equals(NewPoint(-math.Sqrt2/2, math.Sqrt2/2, 0)))
+	assert.True(t, fullQuarter.MultiplyTuple(p).Equals(NewPoint(-1, 0, 0)))
+
+	// inverse rotation
+	assert.True(t, halfQuarter.Inverse().MultiplyTuple(p).Equals(NewPoint(math.Sqrt2/2, math.Sqrt2/2, 0)))
+}
+
+func TestShearing(t *testing.T) {
+	p := NewPoint(2, 3, 4)
+
+	// x in proportion to y
+	m := NewShearing(1, 0, 0, 0, 0, 0)
+	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(5, 3, 4)))
+
+	// x in proportion to z
+	m = NewShearing(0, 1, 0, 0, 0, 0)
+	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(6, 3, 4)))
+
+	// y in proportion to x
+	m = NewShearing(0, 0, 1, 0, 0, 0)
+	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(2, 5, 4)))
+
+	// y in proportion to z
+	m = NewShearing(0, 0, 0, 1, 0, 0)
+	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(2, 7, 4)))
+
+	// z in proportion to x
+	m = NewShearing(0, 0, 0, 0, 1, 0)
+	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(2, 3, 6)))
+
+	// z in proportion to y
+	m = NewShearing(0, 0, 0, 0, 0, 1)
+	assert.True(t, m.MultiplyTuple(p).Equals(NewPoint(2, 3, 7)))
+}
