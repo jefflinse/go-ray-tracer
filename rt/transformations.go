@@ -4,6 +4,11 @@ import (
 	"math"
 )
 
+// NewTransform returns an identity matrix as the basis for a transformation.
+func NewTransform() Matrix {
+	return NewIdentityMatrix()
+}
+
 // NewTranslation creates a new translation matrix.
 func NewTranslation(x float64, y float64, z float64) Matrix {
 	m := NewIdentityMatrix()
@@ -62,4 +67,34 @@ func NewShearing(xy float64, xz float64, yx float64, yz float64, zx float64, zy 
 	m[2][0] = zx
 	m[2][1] = zy
 	return m
+}
+
+// Translate adds a translation to a transformation matrix.
+func (m Matrix) Translate(x float64, y float64, z float64) Matrix {
+	return NewTranslation(x, y, z).Multiply(m)
+}
+
+// Scale adds a scaling to a transformation matrix.
+func (m Matrix) Scale(x float64, y float64, z float64) Matrix {
+	return NewScaling(x, y, z).Multiply(m)
+}
+
+// RotateX adds an X-rotation to a transformation matrix.
+func (m Matrix) RotateX(radians float64) Matrix {
+	return NewRotationX(radians).Multiply(m)
+}
+
+// RotateY adds an Y-rotation to a transformation matrix.
+func (m Matrix) RotateY(radians float64) Matrix {
+	return NewRotationY(radians).Multiply(m)
+}
+
+// RotateZ adds an X-rotation to a transformation matrix.
+func (m Matrix) RotateZ(radians float64) Matrix {
+	return NewRotationZ(radians).Multiply(m)
+}
+
+// Shear adds a shearing to a transformation matrix.
+func (m Matrix) Shear(xy float64, xz float64, yx float64, yz float64, zx float64, zy float64) Matrix {
+	return NewShearing(xy, xz, yx, yz, zx, zy).Multiply(m)
 }

@@ -122,3 +122,20 @@ func TestSqeuentialTransformations(t *testing.T) {
 	chained := translate.Multiply(scale).Multiply(rotate)
 	assert.True(t, chained.MultiplyTuple(p).Equals(NewPoint(15, 0, 7)))
 }
+
+func TestTransformationAPIs(t *testing.T) {
+	assert.True(t, NewTransform().Translate(1, 1, 1).Equals(NewIdentityMatrix().Multiply(NewTranslation(1, 1, 1))))
+	assert.True(t, NewTransform().Scale(1, 1, 1).Equals(NewIdentityMatrix().Multiply(NewScaling(1, 1, 1))))
+	assert.True(t, NewTransform().RotateX(.5).Equals(NewIdentityMatrix().Multiply(NewRotationX(.5))))
+	assert.True(t, NewTransform().RotateY(.5).Equals(NewIdentityMatrix().Multiply(NewRotationY(.5))))
+	assert.True(t, NewTransform().RotateZ(.5).Equals(NewIdentityMatrix().Multiply(NewRotationZ(.5))))
+	assert.True(t, NewTransform().Shear(1, 1, 1, 1, 1, 1).Equals(NewIdentityMatrix().Multiply(NewShearing(1, 1, 1, 1, 1, 1))))
+
+	// chaining works as expected
+	rotate := NewRotationX(math.Pi / 2)
+	scale := NewScaling(5, 5, 5)
+	translate := NewTranslation(10, 5, 7)
+	t1 := translate.Multiply(scale).Multiply(rotate)
+	t2 := NewTransform().RotateX(math.Pi/2).Scale(5, 5, 5).Translate(10, 5, 7)
+	assert.True(t, t2.Equals(t1))
+}
