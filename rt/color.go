@@ -30,7 +30,7 @@ func (c Color) Blue() float64 {
 
 // Equals returns true if this color is equal to another one.
 func (c Color) Equals(other Color) bool {
-	return eq(c[0], other[0]) && eq(c[1], other[1]) && eq(c[2], other[2])
+	return Tuple(c).Equals(Tuple(other))
 }
 
 // Add creates a new Color by adding the components of this color with another one.

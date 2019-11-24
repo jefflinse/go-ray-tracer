@@ -10,7 +10,7 @@ import (
 func TestNewSphere(t *testing.T) {
 	s := NewSphere()
 	assert.Equal(t, NewMaterial(), s.Material)
-	assert.Equal(t, NewIdentityMatrix(), s.Transform)
+	assert.Equal(t, NewTransform(), s.Transform)
 }
 
 func TestSphere_GetMaterial(t *testing.T) {
@@ -40,7 +40,7 @@ func TestRayIntersectsSphere(t *testing.T) {
 	assert.Equal(t, xs[1].Object, s)
 
 	// ray originates inside the sphere
-	r = NewRay(NewPoint(0, 0, 0), NewVector(0, 0, 1))
+	r = NewRay(Origin(), NewVector(0, 0, 1))
 	xs = s.Intersect(r)
 	assert.Len(t, xs, 2)
 	assert.True(t, eq(xs[0].T, -1.0))
@@ -110,7 +110,7 @@ func TestSphere_NormalAt(t *testing.T) {
 
 	// on a transformed sphere
 	s = NewSphere()
-	s.Transform = NewScaling(1, .5, 1).Multiply(NewRotationZ(math.Pi / 5))
+	s.Transform = NewScaling(1, .5, 1).CombineWith(NewRotationZ(math.Pi / 5))
 	n = s.NormalAt(NewPoint(0, math.Sqrt2/2, -math.Sqrt2/2))
 	assert.True(t, n.Equals(NewVector(0, .97014, -.24254)))
 }

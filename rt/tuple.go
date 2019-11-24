@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-// A Tuple contains three dimensions and is either a Point or a Vector.
+// A Tuple is a 1D array of numbers of length 4 and is either a Point or a Vector.
 type Tuple []float64
 
 // NewTuple creates a new zero-filled Tuple.

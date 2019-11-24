@@ -1,9 +1,9 @@
 package rt
 
-// A Matrix is a 4x4 matrix of numbers.
+// A Matrix is a 2D array of numbers.
 type Matrix [][]float64
 
-// NewMatrix creates a new zero-filled Matrix.
+// NewMatrix creates a new zero-filled Matrix of the specified size (NxN).
 func NewMatrix(size int) Matrix {
 	m := make(Matrix, size)
 	for i := range m {
@@ -13,7 +13,7 @@ func NewMatrix(size int) Matrix {
 	return m
 }
 
-// NewIdentityMatrix creates a new identity matrix.
+// NewIdentityMatrix creates a new 4x4 identity matrix.
 func NewIdentityMatrix() Matrix {
 	return Matrix{
 		{1, 0, 0, 0},

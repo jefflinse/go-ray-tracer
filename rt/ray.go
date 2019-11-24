@@ -17,6 +17,6 @@ func (r *Ray) Position(t float64) Tuple {
 }
 
 // Transform applies the specified transformation matrix and returns a new ray.
-func (r *Ray) Transform(m Matrix) *Ray {
-	return NewRay(m.MultiplyTuple(r.Origin), m.MultiplyTuple(r.Direction))
+func (r *Ray) Transform(t Transformation) *Ray {
+	return NewRay(t.ApplyTo(r.Origin), t.ApplyTo(r.Direction))
 }

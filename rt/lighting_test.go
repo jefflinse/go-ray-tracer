@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewPointLight(t *testing.T) {
-	position := NewPoint(0, 0, 0)
+	position := Origin()
 	intensity := NewColor(1, 1, 1)
 	l := NewPointLight(position, intensity)
 	assert.Equal(t, position, l.Position)

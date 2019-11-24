@@ -7,7 +7,7 @@ import (
 // A Sphere represents a sphere.
 type Sphere struct {
 	Material  Material
-	Transform Matrix
+	Transform Transformation
 }
 
 // NewSphere creates a new Sphere.
@@ -45,9 +45,9 @@ func (s *Sphere) Intersect(ray *Ray) IntersectionSet {
 
 // NormalAt returns the normal vector from the sphere for a point p.
 func (s *Sphere) NormalAt(worldPoint Tuple) Tuple {
-	objectPoint := s.Transform.Inverse().MultiplyTuple(worldPoint)
+	objectPoint := s.Transform.Inverse().ApplyTo(worldPoint)
 	objectNormal := objectPoint.Subtract(Origin())
-	worldNormal := s.Transform.Inverse().Transpose().MultiplyTuple(objectNormal)
+	worldNormal := s.Transform.Inverse().Transpose().ApplyTo(objectNormal)
 	worldNormal[3] = 0
 	return worldNormal.Normalize()
 }
