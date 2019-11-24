@@ -97,9 +97,9 @@ func (t Tuple) Magnitude() float64 {
 }
 
 // Normalize creates a new Tuple by dividing each of this tuple's values by its magnitude.
-func (t Tuple) Normalize() *Tuple {
+func (t Tuple) Normalize() Tuple {
 	mag := t.Magnitude()
-	return &Tuple{t[0] / mag, t[1] / mag, t[2] / mag, t[3]}
+	return Tuple{t[0] / mag, t[1] / mag, t[2] / mag, t[3]}
 }
 
 // Dot returns the dot product of this vector and another.
