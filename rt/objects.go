@@ -37,10 +37,10 @@ func (s *Sphere) Intersect(ray *Ray) IntersectionSet {
 		return IntersectionSet{}
 	}
 
-	return IntersectionSet{
+	return NewIntersectionSet(
 		NewIntersection((-b-math.Sqrt(discriminant))/(2*a), s),
 		NewIntersection((-b+math.Sqrt(discriminant))/(2*a), s),
-	}
+	)
 }
 
 // NormalAt returns the normal vector from the sphere for a point p.
