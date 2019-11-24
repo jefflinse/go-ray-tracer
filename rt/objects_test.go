@@ -1,6 +1,7 @@
 package rt
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,4 +73,38 @@ func TestRayIntersectsSphereWithTransformation(t *testing.T) {
 	r = NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
 	xs = s.Intersect(r)
 	assert.Len(t, xs, 0)
+}
+
+func TestSphere_NormalAt(t *testing.T) {
+	s := NewSphere()
+
+	// on the X axis
+	n := s.NormalAt(NewPoint(1, 0, 0))
+	assert.Equal(t, NewVector(1, 0, 0), n)
+
+	// on the X axis
+	n = s.NormalAt(NewPoint(0, 1, 0))
+	assert.Equal(t, NewVector(0, 1, 0), n)
+
+	// on the X axis
+	n = s.NormalAt(NewPoint(0, 0, 1))
+	assert.Equal(t, NewVector(0, 0, 1), n)
+
+	// nonaxial point
+	val := math.Sqrt(3) / 3
+	n = s.NormalAt(NewPoint(val, val, val))
+	assert.True(t, n.Equals(NewVector(val, val, val)))
+	assert.True(t, n.Equals(n.Normalize()))
+
+	// on a traslated sphere
+	s = NewSphere()
+	s.Transform = NewTranslation(0, 1, 0)
+	n = s.NormalAt(NewPoint(0, 1.70711, -.70711))
+	assert.True(t, n.Equals(NewVector(0, .70711, -.70711)))
+
+	// on a transformed sphere
+	s = NewSphere()
+	s.Transform = NewScaling(1, .5, 1).Multiply(NewRotationZ(math.Pi / 5))
+	n = s.NormalAt(NewPoint(0, math.Sqrt2/2, -math.Sqrt2/2))
+	assert.True(t, n.Equals(NewVector(0, .97014, -.24254)))
 }

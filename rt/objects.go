@@ -35,3 +35,12 @@ func (s *Sphere) Intersect(ray *Ray) IntersectionSet {
 		NewIntersection((-b+math.Sqrt(discriminant))/(2*a), s),
 	}
 }
+
+// NormalAt returns the normal vector from the sphere for a point p.
+func (s *Sphere) NormalAt(worldPoint Tuple) Tuple {
+	objectPoint := s.Transform.Inverse().MultiplyTuple(worldPoint)
+	objectNormal := objectPoint.Subtract(Origin())
+	worldNormal := s.Transform.Inverse().Transpose().MultiplyTuple(objectNormal)
+	worldNormal[3] = 0
+	return worldNormal.Normalize()
+}
