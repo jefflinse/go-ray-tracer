@@ -8,7 +8,7 @@ import (
 
 func TestNewSphere(t *testing.T) {
 	s := NewSphere()
-	assert.NotNil(t, s)
+	assert.Equal(t, NewIdentityMatrix(), s.Transform)
 }
 
 func TestRayIntersectsSphere(t *testing.T) {
@@ -52,6 +52,24 @@ func TestRayIntersectsSphere(t *testing.T) {
 
 	// no intersection
 	r = NewRay(NewPoint(2, 2, 2), NewVector(0, 0, 1))
+	xs = s.Intersect(r)
+	assert.Len(t, xs, 0)
+}
+
+func TestRayIntersectsSphereWithTransformation(t *testing.T) {
+	// intersecting a scaled sphere
+	s := NewSphere()
+	s.Transform = NewScaling(2, 2, 2)
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	xs := s.Intersect(r)
+	assert.Len(t, xs, 2)
+	assert.Equal(t, 3.0, xs[0].T)
+	assert.Equal(t, 7.0, xs[1].T)
+
+	// intersecting a translated sphere
+	s = NewSphere()
+	s.Transform = NewTranslation(5, 0, 0)
+	r = NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
 	xs = s.Intersect(r)
 	assert.Len(t, xs, 0)
 }

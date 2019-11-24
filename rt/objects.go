@@ -5,18 +5,24 @@ import (
 )
 
 // A Sphere represents a sphere.
-type Sphere struct{}
+type Sphere struct {
+	Transform Matrix
+}
 
 // NewSphere creates a new Sphere.
 func NewSphere() *Sphere {
-	return &Sphere{}
+	return &Sphere{
+		Transform: NewTransform(),
+	}
 }
 
 // Intersect returns a set of points where a ray intersects the sphere.
 func (s *Sphere) Intersect(ray *Ray) IntersectionSet {
-	sphereToRay := ray.Origin.Subtract(Origin())
-	a := ray.Direction.Dot(ray.Direction)
-	b := 2 * ray.Direction.Dot(sphereToRay)
+	r := ray.Transform(s.Transform.Inverse())
+
+	sphereToRay := r.Origin.Subtract(Origin())
+	a := r.Direction.Dot(r.Direction)
+	b := 2 * r.Direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
 
 	discriminant := math.Pow(b, 2) - 4*a*c
@@ -25,7 +31,7 @@ func (s *Sphere) Intersect(ray *Ray) IntersectionSet {
 	}
 
 	return IntersectionSet{
-		NewIntersection((-b-math.Sqrt(discriminant))/2*a, s),
-		NewIntersection((-b+math.Sqrt(discriminant))/2*a, s),
+		NewIntersection((-b-math.Sqrt(discriminant))/(2*a), s),
+		NewIntersection((-b+math.Sqrt(discriminant))/(2*a), s),
 	}
 }
