@@ -6,12 +6,14 @@ import (
 
 // A Sphere represents a sphere.
 type Sphere struct {
+	Material  Material
 	Transform Matrix
 }
 
 // NewSphere creates a new Sphere.
 func NewSphere() *Sphere {
 	return &Sphere{
+		Material:  NewMaterial(),
 		Transform: NewTransform(),
 	}
 }

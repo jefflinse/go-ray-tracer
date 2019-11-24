@@ -9,6 +9,7 @@ import (
 
 func TestNewSphere(t *testing.T) {
 	s := NewSphere()
+	assert.Equal(t, NewMaterial(), s.Material)
 	assert.Equal(t, NewIdentityMatrix(), s.Transform)
 }
 
