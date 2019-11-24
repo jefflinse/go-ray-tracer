@@ -15,8 +15,9 @@ func main() {
 	halfWall := wallSize / 2
 
 	canvas := rt.NewCanvas(canvasPixels, canvasPixels)
-	color := rt.NewColor(1, 0, 0)
 	shape := rt.NewSphere()
+	shape.Material.Color = rt.NewColor(1, .2, 1)
+	light := rt.NewPointLight(rt.NewPoint(-10, 10, -10), rt.NewColor(1, 1, 1))
 
 	for y := 0; y < canvasPixels; y++ {
 		worldY := halfWall - pixelSize*float64(y)
@@ -25,7 +26,11 @@ func main() {
 			position := rt.NewPoint(worldX, worldY, wallZ)
 			ray := rt.NewRay(rayOrigin, position.Subtract(rayOrigin).Normalize())
 			intersections := shape.Intersect(ray)
-			if intersections.Hit() != nil {
+			if hit := intersections.Hit(); hit != nil {
+				point := ray.Position(hit.T)
+				normal := hit.Object.NormalAt(point)
+				eye := ray.Direction.Negate()
+				color := hit.Object.GetMaterial().Lighting(light, point, eye, normal)
 				canvas.WritePixel(x, y, color)
 			}
 		}
