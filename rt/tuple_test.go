@@ -139,6 +139,17 @@ func TestTuple_Cross(t *testing.T) {
 	assert.True(t, v2.Cross(v1).Equals(NewVector(1, -2, 1)))
 }
 
+func TestTuple_Reflect(t *testing.T) {
+	v := NewVector(1, -1, 0)
+	n := NewVector(0, 1, 0)
+	assert.True(t, v.Reflect(n).Equals(NewVector(1, 1, 0)))
+
+	// slanted surface
+	v = NewVector(0, -1, 0)
+	n = NewVector(math.Sqrt2/2, math.Sqrt2/2, 0)
+	assert.True(t, v.Reflect(n).Equals(NewVector(1, 0, 0)))
+}
+
 func TestTuple_String(t *testing.T) {
 	t1 := &Tuple{1, 2, 3, 4}
 	assert.Equal(t, "(1.000000,2.000000,3.000000)[4.000000]", t1.String())

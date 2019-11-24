@@ -117,6 +117,11 @@ func (t Tuple) Cross(other Tuple) Tuple {
 	}
 }
 
+// Reflect returns the vector created by reflecting this vector around the specified normal vector.
+func (t Tuple) Reflect(normal Tuple) Tuple {
+	return t.Subtract(normal.Multiply(2).Multiply(t.Dot(normal)))
+}
+
 // String returns a string representation of a Tuple.
 func (t Tuple) String() string {
 	return fmt.Sprintf("(%f,%f,%f)[%f]", t[0], t[1], t[2], t[3])
