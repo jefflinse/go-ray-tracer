@@ -1,7 +1,10 @@
 package rt
 
 // An Intersectable is anything that can be intersected by a ray.
-type Intersectable interface{}
+type Intersectable interface {
+	GetMaterial() Material
+	NormalAt(worldPoint Tuple) Tuple
+}
 
 // An Intersection represents the intersection of a ray and an object.
 type Intersection struct {

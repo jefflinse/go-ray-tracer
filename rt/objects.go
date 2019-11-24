@@ -18,6 +18,11 @@ func NewSphere() *Sphere {
 	}
 }
 
+// GetMaterial returns the sphere's material properies.
+func (s *Sphere) GetMaterial() Material {
+	return s.Material
+}
+
 // Intersect returns a set of points where a ray intersects the sphere.
 func (s *Sphere) Intersect(ray *Ray) IntersectionSet {
 	r := ray.Transform(s.Transform.Inverse())

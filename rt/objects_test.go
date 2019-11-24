@@ -13,6 +13,11 @@ func TestNewSphere(t *testing.T) {
 	assert.Equal(t, NewIdentityMatrix(), s.Transform)
 }
 
+func TestSphere_GetMaterial(t *testing.T) {
+	s := NewSphere()
+	assert.Equal(t, NewMaterial(), s.GetMaterial())
+}
+
 func TestRayIntersectsSphere(t *testing.T) {
 	s := NewSphere()
 
