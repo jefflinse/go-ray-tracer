@@ -28,6 +28,11 @@ func TestNewVector(t *testing.T) {
 	assert.Equal(t, p.W(), 0.0)
 }
 
+func TestOrigin(t *testing.T) {
+	o := Origin()
+	assert.Equal(t, NewPoint(0, 0, 0), o)
+}
+
 func TestTuple_Equals(t *testing.T) {
 	t1 := Tuple{1, 2, 3, 0}
 	t2 := Tuple{1, 2, 3, 0}

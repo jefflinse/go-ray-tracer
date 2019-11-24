@@ -23,6 +23,11 @@ func NewVector(x float64, y float64, z float64) Tuple {
 	return Tuple{x, y, z, 0}
 }
 
+// Origin returns a new Point at the origin.
+func Origin() Tuple {
+	return NewPoint(0, 0, 0)
+}
+
 // X returns the X value of the tuple.
 func (t Tuple) X() float64 {
 	return t[0]
