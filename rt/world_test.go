@@ -44,6 +44,28 @@ func TestWorld_Intersect(t *testing.T) {
 	assert.Equal(t, xs[3].T, 6.0)
 }
 
+func TestWorld_IsShadowed(t *testing.T) {
+	// no shadow when nothing is collinear with point and light
+	w := NewDefaultWorld()
+	p := NewPoint(0, 10, 0)
+	assert.False(t, w.IsShadowed(p))
+
+	// shadow when object is between point and light
+	w = NewDefaultWorld()
+	p = NewPoint(10, -10, 10)
+	assert.True(t, w.IsShadowed(p))
+
+	// no shadow when object is behind the light
+	w = NewDefaultWorld()
+	p = NewPoint(-20, 20, -20)
+	assert.False(t, w.IsShadowed(p))
+
+	// no shadow when object is behind point
+	w = NewDefaultWorld()
+	p = NewPoint(-2, 2, -2)
+	assert.False(t, w.IsShadowed(p))
+}
+
 func TestWorld_ShadeHit(t *testing.T) {
 	w := NewDefaultWorld()
 	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
@@ -62,6 +84,29 @@ func TestWorld_ShadeHit(t *testing.T) {
 	info = i.PrepareComputations(r)
 	c = w.ShadeHit(info)
 	assert.True(t, c.Equals(NewColor(.90498, .90498, .90498)))
+
+	// shade an intersection in a shadow
+	w = NewWorld()
+	w.Light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
+	s1 := NewSphere()
+	w.AddObjects(s1)
+	s2 := NewSphere()
+	s2.Transform = NewTranslation(0, 0, 10)
+	w.AddObjects(s2)
+	r = NewRay(NewPoint(0, 0, 5), NewVector(0, 0, 1))
+	i = NewIntersection(4, s2)
+	info = i.PrepareComputations(r)
+	c = w.ShadeHit(info)
+	assert.True(t, c.Equals(NewColor(.1, .1, .1)))
+
+	// the hit should offset the point
+	r = NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s1 = NewSphere()
+	s1.Transform = NewTranslation(0, 0, 1)
+	i = NewIntersection(5, s1)
+	info = i.PrepareComputations(r)
+	assert.Less(t, info.OverPoint.Z(), -EPSILON/2)
+	assert.Greater(t, info.Point.Z(), info.OverPoint.Z())
 }
 
 func TestWorld_ColorAt(t *testing.T) {

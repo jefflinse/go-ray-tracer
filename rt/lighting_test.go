@@ -31,7 +31,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV := NewVector(0, 0, -1)
 	normalV := NewVector(0, 0, -1)
 	light := NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
-	result := m.Lighting(light, p, eyeV, normalV)
+	result := m.Lighting(light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(1.9, 1.9, 1.9)))
 
 	// eye between the light and the surface, eye offset 45 degrees
@@ -40,7 +40,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, math.Sqrt2/2, -math.Sqrt2/2)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV)
+	result = m.Lighting(light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(1, 1, 1)))
 
 	// eye opposite surface, light offset 45 degrees
@@ -49,7 +49,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, 0, -1)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 10, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV)
+	result = m.Lighting(light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(.7364, .7364, .7364)))
 
 	// eye in the path of the reflection vector
@@ -58,7 +58,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, -math.Sqrt2/2, -math.Sqrt2/2)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 10, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV)
+	result = m.Lighting(light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(1.6364, 1.6364, 1.6364)))
 
 	// light behind the surface
@@ -67,6 +67,15 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, 0, -1)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 0, 10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV)
+	result = m.Lighting(light, p, eyeV, normalV, false)
+	assert.True(t, result.Equals(NewColor(.1, .1, .1)))
+
+	// lighting with surface in shadow
+	m = NewMaterial()
+	p = Origin()
+	eyeV = NewVector(0, 0, -1)
+	normalV = NewVector(0, 0, -1)
+	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
+	result = m.Lighting(light, p, eyeV, normalV, true)
 	assert.True(t, result.Equals(NewColor(.1, .1, .1)))
 }

@@ -38,17 +38,20 @@ func (i *Intersection) PrepareComputations(ray *Ray) *IntersectionInfo {
 		info.NormalV = info.NormalV.Negate()
 	}
 
+	info.OverPoint = info.Point.Add(info.NormalV.Multiply(EPSILON))
+
 	return info
 }
 
 // An IntersectionInfo is a set of precomputed intersection information.
 type IntersectionInfo struct {
-	Object  Intersectable
-	T       float64
-	Point   Tuple
-	EyeV    Tuple
-	NormalV Tuple
-	Inside  bool
+	Object    Intersectable
+	T         float64
+	Point     Tuple
+	OverPoint Tuple
+	EyeV      Tuple
+	NormalV   Tuple
+	Inside    bool
 }
 
 // An IntersectionSet is a collection of Intersections.

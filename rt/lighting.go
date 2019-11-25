@@ -36,7 +36,7 @@ func NewMaterial() Material {
 }
 
 // Lighting returns the computed color of the lighting for the given parameters.
-func (m Material) Lighting(light *PointLight, position Tuple, eyeV Tuple, normalV Tuple) Color {
+func (m Material) Lighting(light *PointLight, position Tuple, eyeV Tuple, normalV Tuple, inShadow bool) Color {
 	effectiveColor := m.Color.Blend(light.Intensity)
 	lightV := light.Position.Subtract(position).Normalize()
 	ambient := effectiveColor.Multiply(m.Ambient)
@@ -51,6 +51,10 @@ func (m Material) Lighting(light *PointLight, position Tuple, eyeV Tuple, normal
 			factor := math.Pow(reflectDotEye, m.Shininess)
 			specular = light.Intensity.Multiply(m.Specular).Multiply(factor)
 		}
+	}
+
+	if inShadow {
+		return ambient
 	}
 
 	return ambient.Add(diffuse).Add(specular)
