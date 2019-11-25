@@ -15,45 +15,29 @@ func main() {
 	floor.Material.Specular = 0
 
 	leftWall := rt.NewSphere()
-	leftWall.Transform = rt.NewTranslation(0, 0, 5).CombineWith(
-		rt.NewRotationY(-math.Pi / 4),
-	).CombineWith(
-		rt.NewRotationX(math.Pi / 2),
-	).CombineWith(
-		rt.NewScaling(10, .01, 10),
-	)
+	leftWall.Transform = rt.NewTransform().Scale(10, .01, 10).RotateX(math.Pi/2).RotateY(-math.Pi/4).Translate(0, 0, 5)
 	leftWall.Material = floor.Material
 
 	rightWall := rt.NewSphere()
-	rightWall.Transform = rt.NewTranslation(0, 0, 5).CombineWith(
-		rt.NewRotationY(math.Pi / 4),
-	).CombineWith(
-		rt.NewRotationX(math.Pi / 2),
-	).CombineWith(
-		rt.NewScaling(10, .01, 10),
-	)
+	rightWall.Transform = rt.NewTransform().Scale(10, .01, 10).RotateX(math.Pi/2).RotateY(math.Pi/4).Translate(0, 0, 5)
 	rightWall.Material = floor.Material
 
 	middle := rt.NewSphere()
-	middle.Transform = rt.NewTranslation(-.5, 1, .5)
+	middle.Transform = rt.NewTransform().Translate(-.5, 1, .5)
 	middle.Material = rt.NewMaterial()
 	middle.Material.Color = rt.NewColor(.1, 1, .5)
 	middle.Material.Diffuse = .7
 	middle.Material.Specular = .3
 
 	right := rt.NewSphere()
-	right.Transform = rt.NewTranslation(1.5, .5, -.5).CombineWith(
-		rt.NewScaling(.5, .5, .5),
-	)
+	right.Transform = rt.NewTransform().Scale(.5, .5, .5).Translate(1.5, .5, -.5)
 	right.Material = rt.NewMaterial()
 	right.Material.Color = rt.NewColor(.5, 1, .1)
 	right.Material.Diffuse = .7
 	right.Material.Specular = .3
 
 	left := rt.NewSphere()
-	left.Transform = rt.NewTranslation(-1.5, .33, -.75).CombineWith(
-		rt.NewScaling(.33, .33, .33),
-	)
+	left.Transform = rt.NewTransform().Scale(.33, .33, .33).Translate(-1.5, .33, -.75)
 	left.Material = rt.NewMaterial()
 	left.Material.Color = rt.NewColor(1, .8, .1)
 	left.Material.Diffuse = .7
