@@ -13,6 +13,35 @@ func TestNewIntersection(t *testing.T) {
 	assert.Equal(t, s, i.Object)
 }
 
+func TestIntersection_PrepareComputatations(t *testing.T) {
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s := NewSphere()
+	i := NewIntersection(4, s)
+	info := i.PrepareComputations(r)
+	assert.Equal(t, i.T, info.T)
+	assert.Equal(t, i.Object, info.Object)
+	assert.Equal(t, NewPoint(0, 0, -1), info.Point)
+	assert.Equal(t, NewVector(0, 0, -1), info.EyeV)
+	assert.Equal(t, NewVector(0, 0, -1), info.NormalV)
+
+	// the hit, when an intersection occurs on the outside of an object
+	r = NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s = NewSphere()
+	i = NewIntersection(4, s)
+	info = i.PrepareComputations(r)
+	assert.Equal(t, false, info.Inside)
+
+	// the hit, when an intersection occurs on the inside of an object
+	r = NewRay(NewPoint(0, 0, 0), NewVector(0, 0, 1))
+	s = NewSphere()
+	i = NewIntersection(1, s)
+	info = i.PrepareComputations(r)
+	assert.Equal(t, NewPoint(0, 0, 1), info.Point)
+	assert.Equal(t, NewVector(0, 0, -1), info.EyeV)
+	assert.Equal(t, NewVector(0, 0, -1), info.NormalV)
+	assert.Equal(t, true, info.Inside)
+}
+
 func TestNewIntersectionSet(t *testing.T) {
 	xs := NewIntersectionSet()
 	assert.Len(t, xs, 0)

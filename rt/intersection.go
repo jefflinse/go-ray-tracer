@@ -22,6 +22,35 @@ func NewIntersection(t float64, obj Intersectable) *Intersection {
 	return &Intersection{t, obj}
 }
 
+// PrepareComputations precomputes intersection information.
+func (i *Intersection) PrepareComputations(ray *Ray) *IntersectionInfo {
+	info := &IntersectionInfo{
+		Object: i.Object,
+		T:      i.T,
+	}
+
+	info.Point = ray.Position(info.T)
+	info.EyeV = ray.Direction.Negate()
+	info.NormalV = i.Object.NormalAt(info.Point)
+
+	if info.NormalV.Dot(info.EyeV) < 0 {
+		info.Inside = true
+		info.NormalV = info.NormalV.Negate()
+	}
+
+	return info
+}
+
+// An IntersectionInfo is a set of precomputed intersection information.
+type IntersectionInfo struct {
+	Object  Intersectable
+	T       float64
+	Point   Tuple
+	EyeV    Tuple
+	NormalV Tuple
+	Inside  bool
+}
+
 // An IntersectionSet is a collection of Intersections.
 type IntersectionSet []*Intersection
 
@@ -37,14 +66,13 @@ func NewIntersectionSet(xs ...*Intersection) IntersectionSet {
 
 // Hit returns the intersection with the smallest nonnegative t value.
 func (s IntersectionSet) Hit() *Intersection {
-	var hit *Intersection
 	for _, x := range s {
-		if (hit == nil && x.T > 0) || (hit != nil && x.T > 0 && x.T < hit.T) {
-			hit = x
+		if x.T >= 0 {
+			return x
 		}
 	}
 
-	return hit
+	return nil
 }
 
 // Join returns a new IntersectionSet containing all of the elements of the original set and the other one.
