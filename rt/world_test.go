@@ -6,6 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewWorld(t *testing.T) {
+	w := NewWorld()
+	assert.NotNil(t, w.Objects)
+}
+
 func TestNewDefaultWorld(t *testing.T) {
 	w := NewDefaultWorld()
 	l := NewPointLight(NewPoint(-10, 10, -10), NewColor(1, 1, 1))
@@ -18,6 +23,14 @@ func TestNewDefaultWorld(t *testing.T) {
 	assert.Equal(t, l, w.Light)
 	assert.Equal(t, s1, w.Objects[0])
 	assert.Equal(t, s2, w.Objects[1])
+}
+
+func TestWorld_AddObjects(t *testing.T) {
+	w := NewWorld()
+	w.AddObjects(NewSphere())
+	assert.Len(t, w.Objects, 1)
+	w.AddObjects(NewSphere(), NewSphere(), NewSphere())
+	assert.Len(t, w.Objects, 4)
 }
 
 func TestWorld_Intersect(t *testing.T) {

@@ -6,6 +6,11 @@ type World struct {
 	Objects []Intersectable
 }
 
+// NewWorld creates a new World.
+func NewWorld() *World {
+	return &World{Objects: make([]Intersectable, 0)}
+}
+
 // NewDefaultWorld creates a new World with a light source and two spheres.
 func NewDefaultWorld() *World {
 	sphere1 := NewSphere()
@@ -22,6 +27,11 @@ func NewDefaultWorld() *World {
 		Light:   light,
 		Objects: []Intersectable{sphere1, sphere2},
 	}
+}
+
+// AddObjects adds one or more objects to the world.
+func (w *World) AddObjects(objs ...Intersectable) {
+	w.Objects = append(w.Objects, objs...)
 }
 
 // ColorAt returns the color computed by intersecting the world with the specified ray.
