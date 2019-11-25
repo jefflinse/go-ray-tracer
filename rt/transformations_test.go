@@ -7,6 +7,46 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewTransform(t *testing.T) {
+	tr := NewTransform()
+	assert.True(t, Matrix(tr).Equals(NewIdentityMatrix()))
+}
+
+func TestNewViewTransform(t *testing.T) {
+	from := NewPoint(0, 0, 0)
+	to := NewPoint(0, 0, -1)
+	up := NewVector(0, 1, 0)
+	vt := NewViewTransform(from, to, up)
+	assert.True(t, vt.Equals(NewTransform()))
+
+	// turn around and look in +Z direction
+	from = NewPoint(0, 0, 0)
+	to = NewPoint(0, 0, 1)
+	up = NewVector(0, 1, 0)
+	vt = NewViewTransform(from, to, up)
+	assert.True(t, vt.Equals(NewScaling(-1, 1, -1)))
+
+	// a view transform moves the world
+	from = NewPoint(0, 0, 8)
+	to = NewPoint(0, 0, 1)
+	up = NewVector(0, 1, 0)
+	vt = NewViewTransform(from, to, up)
+	assert.True(t, vt.Equals(NewTranslation(0, 0, -8)))
+
+	// an arbitrary view transformation
+	from = NewPoint(1, 3, 2)
+	to = NewPoint(4, -2, 8)
+	up = NewVector(1, 1, 0)
+	vt = NewViewTransform(from, to, up)
+	expected := Transformation(Matrix{
+		{-.50709, .50709, .67612, -2.36643},
+		{.76772, .60609, .12122, -2.82843},
+		{-.35857, .59761, -.71714, 0.0},
+		{0.0, 0.0, 0.0, 1.0},
+	})
+	assert.True(t, vt.Equals(expected))
+}
+
 func TestTranslation(t *testing.T) {
 	tm := NewTranslation(5, -3, 2)
 	p := NewPoint(-3, 4, 5)

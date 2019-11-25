@@ -12,6 +12,21 @@ func NewTransform() Transformation {
 	return Transformation(NewIdentityMatrix())
 }
 
+// NewViewTransform creates a new ViewTransform.
+func NewViewTransform(from Tuple, to Tuple, up Tuple) Transformation {
+	forward := to.Subtract(from).Normalize()
+	left := forward.Cross(up.Normalize())
+	trueUp := left.Cross(forward)
+	orientation := Transformation{
+		{left.X(), left.Y(), left.Z(), 0},
+		{trueUp.X(), trueUp.Y(), trueUp.Z(), 0},
+		{-forward.X(), -forward.Y(), -forward.Z(), 0},
+		{0, 0, 0, 1},
+	}
+
+	return orientation.CombineWith(NewTranslation(-from.X(), -from.Y(), -from.Z()))
+}
+
 // NewTranslation creates a new translation matrix.
 func NewTranslation(x float64, y float64, z float64) Transformation {
 	m := NewIdentityMatrix()
