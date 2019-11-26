@@ -8,19 +8,10 @@ import (
 )
 
 func main() {
-	floor := rt.NewSphere()
-	floor.Transform = rt.NewScaling(10, .01, 10)
+	floor := rt.NewPlane()
 	floor.Material = rt.NewMaterial()
 	floor.Material.Color = rt.NewColor(1, .9, .9)
 	floor.Material.Specular = 0
-
-	leftWall := rt.NewSphere()
-	leftWall.Transform = rt.NewTransform().Scale(10, .01, 10).RotateX(math.Pi/2).RotateY(-math.Pi/4).Translate(0, 0, 5)
-	leftWall.Material = floor.Material
-
-	rightWall := rt.NewSphere()
-	rightWall.Transform = rt.NewTransform().Scale(10, .01, 10).RotateX(math.Pi/2).RotateY(math.Pi/4).Translate(0, 0, 5)
-	rightWall.Material = floor.Material
 
 	middle := rt.NewSphere()
 	middle.Transform = rt.NewTransform().Translate(-.5, 1, .5)
@@ -45,7 +36,7 @@ func main() {
 
 	world := rt.NewWorld()
 	world.Light = rt.NewPointLight(rt.NewPoint(-10, 10, -10), rt.NewColor(1, 1, 1))
-	world.AddObjects(floor, leftWall, rightWall, middle, right, left)
+	world.AddObjects(floor, middle, right, left)
 
 	camera := rt.NewCamera(500, 250, math.Pi/3)
 	camera.Transform = rt.NewViewTransform(
