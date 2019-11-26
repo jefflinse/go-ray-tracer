@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/jefflinse/go-ray-tracer/rt"
+	"github.com/jefflinse/go-ray-tracer"
 )
 
 func main() {
