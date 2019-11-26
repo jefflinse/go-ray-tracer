@@ -9,8 +9,7 @@ import (
 
 func TestNewSphere(t *testing.T) {
 	s := NewSphere()
-	assert.Equal(t, NewMaterial(), s.Material)
-	assert.Equal(t, NewTransform(), s.Transform)
+	assert.NotNil(t, s)
 }
 
 func TestSphere_GetMaterial(t *testing.T) {

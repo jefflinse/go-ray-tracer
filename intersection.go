@@ -4,21 +4,14 @@ import (
 	"sort"
 )
 
-// An Intersectable is anything that can be intersected by a ray.
-type Intersectable interface {
-	GetMaterial() Material
-	Intersect(ray *Ray) IntersectionSet
-	NormalAt(worldPoint Tuple) Tuple
-}
-
 // An Intersection represents the intersection of a ray and an object.
 type Intersection struct {
 	T      float64
-	Object Intersectable
+	Object Shape
 }
 
 // NewIntersection creates a new Intersection.
-func NewIntersection(t float64, obj Intersectable) *Intersection {
+func NewIntersection(t float64, obj Shape) *Intersection {
 	return &Intersection{t, obj}
 }
 
@@ -45,7 +38,7 @@ func (i *Intersection) PrepareComputations(ray *Ray) *IntersectionInfo {
 
 // An IntersectionInfo is a set of precomputed intersection information.
 type IntersectionInfo struct {
-	Object    Intersectable
+	Object    Shape
 	T         float64
 	Point     Tuple
 	OverPoint Tuple

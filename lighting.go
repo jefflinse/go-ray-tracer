@@ -25,8 +25,8 @@ type Material struct {
 }
 
 // NewMaterial creates a new Material.
-func NewMaterial() Material {
-	return Material{
+func NewMaterial() *Material {
+	return &Material{
 		Color:     NewColor(1, 1, 1),
 		Ambient:   .1,
 		Diffuse:   .9,

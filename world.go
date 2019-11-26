@@ -3,12 +3,12 @@ package rt
 // A World is a collection of objects.
 type World struct {
 	Light   *PointLight
-	Objects []Intersectable
+	Objects []Shape
 }
 
 // NewWorld creates a new World.
 func NewWorld() *World {
-	return &World{Objects: make([]Intersectable, 0)}
+	return &World{Objects: make([]Shape, 0)}
 }
 
 // NewDefaultWorld creates a new World with a light source and two spheres.
@@ -25,12 +25,12 @@ func NewDefaultWorld() *World {
 
 	return &World{
 		Light:   light,
-		Objects: []Intersectable{sphere1, sphere2},
+		Objects: []Shape{sphere1, sphere2},
 	}
 }
 
 // AddObjects adds one or more objects to the world.
-func (w *World) AddObjects(objs ...Intersectable) {
+func (w *World) AddObjects(objs ...Shape) {
 	w.Objects = append(w.Objects, objs...)
 }
 
