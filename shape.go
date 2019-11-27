@@ -3,6 +3,7 @@ package rt
 // A Shape is anything that can be rendered.
 type Shape interface {
 	GetMaterial() *Material
+	GetTransform() Transformation
 	Intersect(r *Ray) IntersectionSet
 	NormalAt(p Tuple) Tuple
 }
@@ -24,6 +25,11 @@ func NewShapeProps() ShapeProps {
 // GetMaterial gets the material properties.
 func (sp *ShapeProps) GetMaterial() *Material {
 	return sp.Material
+}
+
+// GetTransform gets the shape's transformation.
+func (sp *ShapeProps) GetTransform() Transformation {
+	return sp.Transform
 }
 
 func (sp *ShapeProps) intersect(worldRay *Ray, localIntersectFn func(localRay *Ray) IntersectionSet) IntersectionSet {

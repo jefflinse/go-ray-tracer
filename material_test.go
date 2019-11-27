@@ -25,13 +25,16 @@ func TestNewMaterial(t *testing.T) {
 }
 
 func TestMaterial_Lighting(t *testing.T) {
+	// dummpy object to satisfy call to Lighting()
+	s := NewSphere()
+
 	// eye between the light and the surface
 	m := NewMaterial()
 	p := Origin()
 	eyeV := NewVector(0, 0, -1)
 	normalV := NewVector(0, 0, -1)
 	light := NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
-	result := m.Lighting(light, p, eyeV, normalV, false)
+	result := m.Lighting(s, light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(1.9, 1.9, 1.9)))
 
 	// eye between the light and the surface, eye offset 45 degrees
@@ -40,7 +43,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, math.Sqrt2/2, -math.Sqrt2/2)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV, false)
+	result = m.Lighting(s, light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(1, 1, 1)))
 
 	// eye opposite surface, light offset 45 degrees
@@ -49,7 +52,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, 0, -1)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 10, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV, false)
+	result = m.Lighting(s, light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(.7364, .7364, .7364)))
 
 	// eye in the path of the reflection vector
@@ -58,7 +61,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, -math.Sqrt2/2, -math.Sqrt2/2)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 10, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV, false)
+	result = m.Lighting(s, light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(1.6364, 1.6364, 1.6364)))
 
 	// light behind the surface
@@ -67,7 +70,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, 0, -1)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 0, 10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV, false)
+	result = m.Lighting(s, light, p, eyeV, normalV, false)
 	assert.True(t, result.Equals(NewColor(.1, .1, .1)))
 
 	// lighting with surface in shadow
@@ -76,7 +79,7 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, 0, -1)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
-	result = m.Lighting(light, p, eyeV, normalV, true)
+	result = m.Lighting(s, light, p, eyeV, normalV, true)
 	assert.True(t, result.Equals(NewColor(.1, .1, .1)))
 
 	// lighting with a pattern applied
@@ -88,8 +91,8 @@ func TestMaterial_Lighting(t *testing.T) {
 	eyeV = NewVector(0, 0, -1)
 	normalV = NewVector(0, 0, -1)
 	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
-	c1 := m.Lighting(light, NewPoint(.9, 0, 0), eyeV, normalV, false)
-	c2 := m.Lighting(light, NewPoint(1.1, 0, 0), eyeV, normalV, false)
+	c1 := m.Lighting(s, light, NewPoint(.9, 0, 0), eyeV, normalV, false)
+	c2 := m.Lighting(s, light, NewPoint(1.1, 0, 0), eyeV, normalV, false)
 	assert.Equal(t, NewColor(1, 1, 1), c1)
 	assert.Equal(t, NewColor(0, 0, 0), c2)
 }

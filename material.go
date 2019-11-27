@@ -37,10 +37,10 @@ func NewMaterial() *Material {
 }
 
 // Lighting returns the computed color of the lighting for the given parameters.
-func (m Material) Lighting(light *PointLight, position Tuple, eyeV Tuple, normalV Tuple, inShadow bool) Color {
+func (m Material) Lighting(object Shape, light *PointLight, position Tuple, eyeV Tuple, normalV Tuple, inShadow bool) Color {
 	color := m.Color
 	if m.Pattern != nil {
-		color = m.Pattern.ColorAt(position)
+		color = m.Pattern.AtObject(object, position)
 	}
 
 	effectiveColor := color.Blend(light.Intensity)
