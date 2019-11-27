@@ -110,3 +110,24 @@ func (p *RingPattern) At(point Tuple) Color {
 
 	return p.B
 }
+
+// A CheckerPattern is a pattern of alternating colors in all dimensions.
+type CheckerPattern struct {
+	PatternProps
+}
+
+// NewCheckerPattern creates a new RingPattern.
+func NewCheckerPattern(a Color, b Color) *CheckerPattern {
+	pattern := &CheckerPattern{NewPatternProps(a, b)}
+	pattern.p = pattern
+	return pattern
+}
+
+// At returns the pattern color at the given point.
+func (p *CheckerPattern) At(point Tuple) Color {
+	if (int(math.Floor(point.X()))+int(math.Floor(point.Y()))+int(math.Floor(point.Z())))%2 == 0 {
+		return p.A
+	}
+
+	return p.B
+}

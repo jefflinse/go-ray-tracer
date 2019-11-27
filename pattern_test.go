@@ -94,3 +94,16 @@ func TestRingPattern_At(t *testing.T) {
 	assert.True(t, p.At(NewPoint(0, 0, 1)).Equals(black))
 	assert.True(t, p.At(NewPoint(.708, 0, .708)).Equals(black))
 }
+
+func TestCheckerPattern_At(t *testing.T) {
+	p := NewCheckerPattern(white, black)
+	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(.99, 0, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(1.01, 0, 0)).Equals(black))
+	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(0, .99, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(0, 1.01, 0)).Equals(black))
+	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(0, 0, .99)).Equals(white))
+	assert.True(t, p.At(NewPoint(0, 0, 1.01)).Equals(black))
+}
