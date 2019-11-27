@@ -20,6 +20,13 @@ func (tp *testPattern) At(point Tuple) Color {
 	return NewColor(point.X(), point.Y(), point.Z())
 }
 
+func TestNewPatternProps(t *testing.T) {
+	p := NewPatternProps(white, black)
+	assert.Equal(t, white, p.A)
+	assert.Equal(t, black, p.B)
+	assert.Equal(t, NewTransform(), p.Transform)
+}
+
 func TestPatternProps_AtObject(t *testing.T) {
 	// without any transformations
 	o := NewSphere()
@@ -48,12 +55,6 @@ func TestPatternProps_AtObject(t *testing.T) {
 	p.SetTransform(NewTranslation(.5, 1, 1.5))
 	c = p.AtObject(o, NewPoint(2.5, 3, 3.5))
 	assert.Equal(t, NewColor(.75, .5, .25), c)
-}
-
-func TestNewStripePattern(t *testing.T) {
-	p := NewStripePattern(white, black)
-	assert.Equal(t, white, p.A)
-	assert.Equal(t, black, p.B)
 }
 
 func TestStripePattern_At(t *testing.T) {
