@@ -21,6 +21,7 @@ type PatternProps struct {
 	A         Color
 	B         Color
 	Transform Transformation
+	p         Pattern
 }
 
 // NewPatternProps creates a new PatternProps.
@@ -33,19 +34,20 @@ func NewPatternProps(a Color, b Color) PatternProps {
 }
 
 // GetTransform returns the pattern's transformation.
-func (p *PatternProps) GetTransform() Transformation {
-	return p.Transform
+func (props *PatternProps) GetTransform() Transformation {
+	return props.Transform
 }
 
 // SetTransform sets the pattern's transformation.
-func (p *PatternProps) SetTransform(transform Transformation) {
-	p.Transform = transform
+func (props *PatternProps) SetTransform(transform Transformation) {
+	props.Transform = transform
 }
 
-func (p *PatternProps) atObject(object Shape, worldPoint Tuple, patternAtObjectFn func(patternPoint Tuple) Color) Color {
+// AtObject returns the pattern color on the specified object at the specified point.
+func (props *PatternProps) AtObject(object Shape, worldPoint Tuple) Color {
 	localPoint := object.GetTransform().Inverse().ApplyTo(worldPoint)
-	patternPoint := p.GetTransform().Inverse().ApplyTo(localPoint)
-	return patternAtObjectFn(patternPoint)
+	patternPoint := props.p.GetTransform().Inverse().ApplyTo(localPoint)
+	return props.p.At(patternPoint)
 }
 
 // A StripePattern is a pattern of colors alternates in the X axis.
@@ -55,7 +57,9 @@ type StripePattern struct {
 
 // NewStripePattern creates a new StripePattern.
 func NewStripePattern(a Color, b Color) *StripePattern {
-	return &StripePattern{NewPatternProps(a, b)}
+	pattern := &StripePattern{NewPatternProps(a, b)}
+	pattern.p = pattern
+	return pattern
 }
 
 // At returns the pattern color at the given point.
@@ -67,13 +71,6 @@ func (p *StripePattern) At(point Tuple) Color {
 	return p.B
 }
 
-// AtObject returns the pattern color on the specified object at the specified point.
-func (p *StripePattern) AtObject(object Shape, point Tuple) Color {
-	return p.atObject(object, point, func(patternPoint Tuple) Color {
-		return p.At(patternPoint)
-	})
-}
-
 // A GradientPattern is a pattern that fades from one color to another.
 type GradientPattern struct {
 	PatternProps
@@ -81,8 +78,9 @@ type GradientPattern struct {
 
 // NewGradientPattern creates a new GradientPattern.
 func NewGradientPattern(a Color, b Color) *GradientPattern {
-	return &GradientPattern{
-		PatternProps: NewPatternProps(a, b)}
+	pattern := &GradientPattern{NewPatternProps(a, b)}
+	pattern.p = pattern
+	return pattern
 }
 
 // At returns the pattern color at the given point.
@@ -92,13 +90,6 @@ func (p *GradientPattern) At(point Tuple) Color {
 	return p.A.Add(distance.Multiply(fraction))
 }
 
-// AtObject returns the pattern color on the specified object at the specified point.
-func (p *GradientPattern) AtObject(object Shape, point Tuple) Color {
-	return p.atObject(object, point, func(patternPoint Tuple) Color {
-		return p.At(patternPoint)
-	})
-}
-
 // A RingPattern is a pattern of alternating rings of color.
 type RingPattern struct {
 	PatternProps
@@ -106,8 +97,9 @@ type RingPattern struct {
 
 // NewRingPattern creates a new RingPattern.
 func NewRingPattern(a Color, b Color) *RingPattern {
-	return &RingPattern{
-		PatternProps: NewPatternProps(a, b)}
+	pattern := &RingPattern{NewPatternProps(a, b)}
+	pattern.p = pattern
+	return pattern
 }
 
 // At returns the pattern color at the given point.
@@ -117,11 +109,4 @@ func (p *RingPattern) At(point Tuple) Color {
 	}
 
 	return p.B
-}
-
-// AtObject returns the pattern color on the specified object at the specified point.
-func (p *RingPattern) AtObject(object Shape, point Tuple) Color {
-	return p.atObject(object, point, func(patternPoint Tuple) Color {
-		return p.At(patternPoint)
-	})
 }

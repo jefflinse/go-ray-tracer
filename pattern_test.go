@@ -6,35 +6,48 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPattern_AtObject(t *testing.T) {
+type testPattern struct {
+	PatternProps
+}
+
+func newTestPattern(a Color, b Color) *testPattern {
+	pattern := &testPattern{NewPatternProps(a, b)}
+	pattern.p = pattern
+	return pattern
+}
+
+func (tp *testPattern) At(point Tuple) Color {
+	return NewColor(point.X(), point.Y(), point.Z())
+}
+
+func TestPatternProps_AtObject(t *testing.T) {
+	// without any transformations
+	o := NewSphere()
+	p := newTestPattern(white, black)
+	c := p.AtObject(o, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(2, 3, 4), c)
+
 	// with object transformation
-	s := NewSphere()
-	s.Transform = NewScaling(2, 2, 2)
-	p := NewPatternProps()
-	c := p.atObject(s, NewPoint(2, 3, 4), func(patternPoint Tuple) Color {
-		return NewColor(patternPoint.X(), patternPoint.Y(), patternPoint.Z())
-	})
-	assert.True(t, c.Equals(NewColor(1, 1.5, 2)))
+	o = NewSphere()
+	o.Transform = NewScaling(2, 2, 2)
+	p = newTestPattern(white, black)
+	c = p.AtObject(o, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(1, 1.5, 2), c)
 
 	// with pattern transformation
-	s = NewSphere()
-	p = NewPatternProps()
-	p.Transform = NewScaling(2, 2, 2)
-	c = p.atObject(s, NewPoint(2, 3, 4), func(patternPoint Tuple) Color {
-		return NewColor(patternPoint.X(), patternPoint.Y(), patternPoint.Z())
-	})
+	o = NewSphere()
+	p = newTestPattern(white, black)
+	p.SetTransform(NewScaling(2, 2, 2))
+	c = p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(1, 1.5, 2), c)
-	assert.True(t, c.Equals(NewColor(1, 1.5, 2)))
 
 	// with both object and pattern transformations
-	s = NewSphere()
-	s.Transform = NewScaling(2, 2, 2)
-	p = NewPatternProps()
-	p.Transform = NewTranslation(.5, 1, 1.5)
-	c = p.atObject(s, NewPoint(2.5, 3, 3.5), func(patternPoint Tuple) Color {
-		return NewColor(patternPoint.X(), patternPoint.Y(), patternPoint.Z())
-	})
-	assert.True(t, c.Equals(NewColor(.75, .5, .25)))
+	o = NewSphere()
+	o.Transform = NewScaling(2, 2, 2)
+	p = newTestPattern(white, black)
+	p.SetTransform(NewTranslation(.5, 1, 1.5))
+	c = p.AtObject(o, NewPoint(2.5, 3, 3.5))
+	assert.Equal(t, NewColor(.75, .5, .25), c)
 }
 
 func TestNewStripePattern(t *testing.T) {
@@ -74,30 +87,10 @@ func TestGradientPattern_At(t *testing.T) {
 	assert.True(t, p.At(NewPoint(.75, 0, 0)).Equals(NewColor(.25, .25, .25)))
 }
 
-func TestGradientPattern_AtObject(t *testing.T) {
-	// with object transformation
-	s := NewSphere()
-	s.Transform = NewScaling(2, 2, 2)
-	p := NewGradientPattern(white, black)
-	c := p.AtObject(s, NewPoint(2, 3, 4))
-	assert.Equal(t, NewColor(1, 1, 1), c)
-	assert.True(t, c.Equals(NewColor(1, 1, 1)))
-
-	// with pattern transformation
-	s = NewSphere()
-	p = NewGradientPattern(white, black)
-	p.Transform = NewScaling(2, 2, 2)
-	c = p.AtObject(s, NewPoint(2, 3, 4))
-	assert.Equal(t, NewColor(1, 1, 1), c)
-	assert.Equal(t, NewColor(1, 1, 1), c)
-	assert.True(t, c.Equals(NewColor(1, 1, 1)))
-
-	// with both object and pattern transformations
-	s = NewSphere()
-	s.Transform = NewScaling(2, 2, 2)
-	p = NewGradientPattern(white, black)
-	p.Transform = NewTranslation(.5, 1, 1.5)
-	c = p.AtObject(s, NewPoint(2.5, 3, 3.5))
-	assert.Equal(t, NewColor(.25, .25, .25), c)
-	assert.True(t, c.Equals(NewColor(.25, .25, .25)))
+func TestRingPattern_At(t *testing.T) {
+	p := NewRingPattern(white, black)
+	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(1, 0, 0)).Equals(black))
+	assert.True(t, p.At(NewPoint(0, 0, 1)).Equals(black))
+	assert.True(t, p.At(NewPoint(.708, 0, .708)).Equals(black))
 }
