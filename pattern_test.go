@@ -73,3 +73,31 @@ func TestGradientPattern_At(t *testing.T) {
 	assert.True(t, p.At(NewPoint(.5, 0, 0)).Equals(NewColor(.5, .5, .5)))
 	assert.True(t, p.At(NewPoint(.75, 0, 0)).Equals(NewColor(.25, .25, .25)))
 }
+
+func TestGradientPattern_AtObject(t *testing.T) {
+	// with object transformation
+	s := NewSphere()
+	s.Transform = NewScaling(2, 2, 2)
+	p := NewGradientPattern(white, black)
+	c := p.AtObject(s, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(1, 1, 1), c)
+	assert.True(t, c.Equals(NewColor(1, 1, 1)))
+
+	// with pattern transformation
+	s = NewSphere()
+	p = NewGradientPattern(white, black)
+	p.Transform = NewScaling(2, 2, 2)
+	c = p.AtObject(s, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(1, 1, 1), c)
+	assert.Equal(t, NewColor(1, 1, 1), c)
+	assert.True(t, c.Equals(NewColor(1, 1, 1)))
+
+	// with both object and pattern transformations
+	s = NewSphere()
+	s.Transform = NewScaling(2, 2, 2)
+	p = NewGradientPattern(white, black)
+	p.Transform = NewTranslation(.5, 1, 1.5)
+	c = p.AtObject(s, NewPoint(2.5, 3, 3.5))
+	assert.Equal(t, NewColor(.25, .25, .25), c)
+	assert.True(t, c.Equals(NewColor(.25, .25, .25)))
+}
