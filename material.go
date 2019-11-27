@@ -20,6 +20,7 @@ type Material struct {
 	Ambient   float64
 	Diffuse   float64
 	Color     Color
+	Pattern   Pattern
 	Specular  float64
 	Shininess float64
 }
@@ -37,7 +38,12 @@ func NewMaterial() *Material {
 
 // Lighting returns the computed color of the lighting for the given parameters.
 func (m Material) Lighting(light *PointLight, position Tuple, eyeV Tuple, normalV Tuple, inShadow bool) Color {
-	effectiveColor := m.Color.Blend(light.Intensity)
+	color := m.Color
+	if m.Pattern != nil {
+		color = m.Pattern.ColorAt(position)
+	}
+
+	effectiveColor := color.Blend(light.Intensity)
 	lightV := light.Position.Subtract(position).Normalize()
 	ambient := effectiveColor.Multiply(m.Ambient)
 	lightDotNormal := lightV.Dot(normalV)

@@ -78,4 +78,18 @@ func TestMaterial_Lighting(t *testing.T) {
 	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
 	result = m.Lighting(light, p, eyeV, normalV, true)
 	assert.True(t, result.Equals(NewColor(.1, .1, .1)))
+
+	// lighting with a pattern applied
+	m = NewMaterial()
+	m.Pattern = NewStripePattern(NewColor(1, 1, 1), NewColor(0, 0, 0))
+	m.Ambient = 1
+	m.Diffuse = 0
+	m.Specular = 0
+	eyeV = NewVector(0, 0, -1)
+	normalV = NewVector(0, 0, -1)
+	light = NewPointLight(NewPoint(0, 0, -10), NewColor(1, 1, 1))
+	c1 := m.Lighting(light, NewPoint(.9, 0, 0), eyeV, normalV, false)
+	c2 := m.Lighting(light, NewPoint(1.1, 0, 0), eyeV, normalV, false)
+	assert.Equal(t, NewColor(1, 1, 1), c1)
+	assert.Equal(t, NewColor(0, 0, 0), c2)
 }
