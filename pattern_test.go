@@ -65,3 +65,11 @@ func TestStripePattern_At(t *testing.T) {
 	assert.Equal(t, black, p.At(NewPoint(-1, 0, 0)))
 	assert.Equal(t, white, p.At(NewPoint(-1.1, 0, 0)))
 }
+
+func TestGradientPattern_At(t *testing.T) {
+	p := NewGradientPattern(white, black)
+	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
+	assert.True(t, p.At(NewPoint(.25, 0, 0)).Equals(NewColor(.75, .75, .75)))
+	assert.True(t, p.At(NewPoint(.5, 0, 0)).Equals(NewColor(.5, .5, .5)))
+	assert.True(t, p.At(NewPoint(.75, 0, 0)).Equals(NewColor(.25, .25, .25)))
+}
