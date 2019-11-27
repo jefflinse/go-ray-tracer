@@ -17,6 +17,7 @@ func main() {
 	middle.Transform = rt.NewTransform().Translate(-.5, 1, .5)
 	middle.Material = rt.NewMaterial()
 	middle.Material.Color = rt.NewColor(.1, 1, .5)
+	middle.Material.Pattern = rt.NewGradientPattern(rt.NewColor(1, 0, 0), rt.NewColor(0, 0, 1))
 	middle.Material.Diffuse = .7
 	middle.Material.Specular = .3
 
@@ -38,7 +39,7 @@ func main() {
 	world.Light = rt.NewPointLight(rt.NewPoint(-10, 10, -10), rt.NewColor(1, 1, 1))
 	world.AddObjects(floor, middle, right, left)
 
-	camera := rt.NewCamera(500, 250, math.Pi/3)
+	camera := rt.NewCamera(250, 125, math.Pi/3)
 	camera.Transform = rt.NewViewTransform(
 		rt.NewPoint(0, 1.5, -5),
 		rt.NewPoint(0, 1, 0),
