@@ -38,10 +38,16 @@ func TestColor_Multiple(t *testing.T) {
 	assert.True(t, c1.Multiply(2).Equals(NewColor(.4, .6, .8)))
 }
 
-func TestColor_Blend(t *testing.T) {
+func TestColor_AverageBlend(t *testing.T) {
+	c1 := NewColor(1, .2, .4)
+	c2 := NewColor(1, .4, .1)
+	assert.True(t, c1.AverageBlend(c2).Equals(NewColor(1, .3, .25)))
+}
+
+func TestColor_HadamardBlend(t *testing.T) {
 	c1 := NewColor(1, .2, .4)
 	c2 := NewColor(.9, 1, .1)
-	assert.True(t, c1.Blend(c2).Equals(NewColor(.9, .2, .04)))
+	assert.True(t, c1.HadamardBlend(c2).Equals(NewColor(.9, .2, .04)))
 }
 
 func TestColor_ToPPM(t *testing.T) {

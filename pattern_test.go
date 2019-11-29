@@ -57,6 +57,41 @@ func TestPatternProps_AtObject(t *testing.T) {
 	assert.Equal(t, NewColor(.75, .5, .25), c)
 }
 
+func TestBlendedPattern_AtObject(t *testing.T) {
+	// without any transformations
+	o := NewSphere()
+	p := NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	c := p.AtObject(o, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(2, 3, 4), c)
+
+	// with object transformation
+	o = NewSphere()
+	o.Transform = NewScaling(2, 2, 2)
+	p = NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	c = p.AtObject(o, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(1, 1.5, 2), c)
+
+	// with pattern transformation
+	o = NewSphere()
+	p = NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p.SetTransform(NewScaling(2, 2, 2))
+	c = p.AtObject(o, NewPoint(2, 3, 4))
+	assert.Equal(t, NewColor(1.5, 2.25, 3), c)
+
+	// with both object and pattern transformations
+	o = NewSphere()
+	o.Transform = NewScaling(2, 2, 2)
+	p = NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p.SetTransform(NewTranslation(.5, 1, 1.5))
+	c = p.AtObject(o, NewPoint(2.5, 3, 3.5))
+	assert.Equal(t, NewColor(1, 1, 1), c)
+}
+
+func TestBlendedPattern_At(t *testing.T) {
+	p := NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	assert.Nil(t, p.At(NewPoint(0, 0, 0)))
+}
+
 func TestStripePattern_At(t *testing.T) {
 	// pattern is constant in Y
 	p := NewStripePattern(white, black)

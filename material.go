@@ -43,7 +43,7 @@ func (m Material) Lighting(object Shape, light *PointLight, position Tuple, eyeV
 		color = m.Pattern.AtObject(object, position)
 	}
 
-	effectiveColor := color.Blend(light.Intensity)
+	effectiveColor := color.HadamardBlend(light.Intensity)
 	lightV := light.Position.Subtract(position).Normalize()
 	ambient := effectiveColor.Multiply(m.Ambient)
 	lightDotNormal := lightV.Dot(normalV)

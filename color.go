@@ -48,8 +48,13 @@ func (c Color) Multiply(s float64) Color {
 	return NewColor(c[0]*s, c[1]*s, c[2]*s)
 }
 
-// Blend creates a new Color by blending this color with another color using the Hadamard product.
-func (c Color) Blend(other Color) Color {
+// AverageBlend creates a new Color by averaging this color with another color.
+func (c Color) AverageBlend(other Color) Color {
+	return NewColor((c[0]+other[0])/2, (c[1]+other[1])/2, (c[2]+other[2])/2)
+}
+
+// HadamardBlend creates a new Color by blending this color with another color using the Hadamard product.
+func (c Color) HadamardBlend(other Color) Color {
 	return NewColor(c[0]*other[0], c[1]*other[1], c[2]*other[2])
 }
 
