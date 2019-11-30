@@ -6,11 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var solidBlack = NewSolidPattern(black)
+var solidWhite = NewSolidPattern(white)
+
 type testPattern struct {
 	PatternProps
 }
 
-func newTestPattern(a Color, b Color) *testPattern {
+func newTestPattern(a Pattern, b Pattern) *testPattern {
 	pattern := &testPattern{NewPatternProps(a, b)}
 	pattern.p = pattern
 	return pattern
@@ -21,29 +24,29 @@ func (tp *testPattern) At(point Tuple) Color {
 }
 
 func TestNewPatternProps(t *testing.T) {
-	p := NewPatternProps(white, black)
-	assert.Equal(t, white, p.A)
-	assert.Equal(t, black, p.B)
+	p := NewPatternProps(solidWhite, solidBlack)
+	assert.Equal(t, solidWhite, p.A)
+	assert.Equal(t, solidBlack, p.B)
 	assert.Equal(t, NewTransform(), p.Transform)
 }
 
 func TestPatternProps_AtObject(t *testing.T) {
 	// without any transformations
 	o := NewSphere()
-	p := newTestPattern(white, black)
+	p := newTestPattern(solidWhite, solidBlack)
 	c := p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(2, 3, 4), c)
 
 	// with object transformation
 	o = NewSphere()
 	o.Transform = NewScaling(2, 2, 2)
-	p = newTestPattern(white, black)
+	p = newTestPattern(solidWhite, solidBlack)
 	c = p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(1, 1.5, 2), c)
 
 	// with pattern transformation
 	o = NewSphere()
-	p = newTestPattern(white, black)
+	p = newTestPattern(solidWhite, solidBlack)
 	p.SetTransform(NewScaling(2, 2, 2))
 	c = p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(1, 1.5, 2), c)
@@ -51,7 +54,7 @@ func TestPatternProps_AtObject(t *testing.T) {
 	// with both object and pattern transformations
 	o = NewSphere()
 	o.Transform = NewScaling(2, 2, 2)
-	p = newTestPattern(white, black)
+	p = newTestPattern(solidWhite, solidBlack)
 	p.SetTransform(NewTranslation(.5, 1, 1.5))
 	c = p.AtObject(o, NewPoint(2.5, 3, 3.5))
 	assert.Equal(t, NewColor(.75, .5, .25), c)
@@ -60,20 +63,20 @@ func TestPatternProps_AtObject(t *testing.T) {
 func TestBlendedPattern_AtObject(t *testing.T) {
 	// without any transformations
 	o := NewSphere()
-	p := NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p := NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	c := p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(2, 3, 4), c)
 
 	// with object transformation
 	o = NewSphere()
 	o.Transform = NewScaling(2, 2, 2)
-	p = NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p = NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	c = p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(1, 1.5, 2), c)
 
 	// with pattern transformation
 	o = NewSphere()
-	p = NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p = NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	p.SetTransform(NewScaling(2, 2, 2))
 	c = p.AtObject(o, NewPoint(2, 3, 4))
 	assert.Equal(t, NewColor(1.5, 2.25, 3), c)
@@ -81,32 +84,32 @@ func TestBlendedPattern_AtObject(t *testing.T) {
 	// with both object and pattern transformations
 	o = NewSphere()
 	o.Transform = NewScaling(2, 2, 2)
-	p = NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p = NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	p.SetTransform(NewTranslation(.5, 1, 1.5))
 	c = p.AtObject(o, NewPoint(2.5, 3, 3.5))
 	assert.Equal(t, NewColor(1, 1, 1), c)
 }
 
 func TestBlendedPattern_At(t *testing.T) {
-	p := NewBlendedPattern(newTestPattern(white, black), newTestPattern(white, black))
+	p := NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	assert.Nil(t, p.At(NewPoint(0, 0, 0)))
 }
 
 func TestStripePattern_At(t *testing.T) {
 	// pattern is constant in Y
-	p := NewStripePattern(white, black)
+	p := NewStripePattern(solidWhite, solidBlack)
 	assert.Equal(t, white, p.At(NewPoint(0, 0, 0)))
 	assert.Equal(t, white, p.At(NewPoint(0, 1, 0)))
 	assert.Equal(t, white, p.At(NewPoint(0, 2, 0)))
 
 	// pattern is constant in Z
-	p = NewStripePattern(white, black)
+	p = NewStripePattern(solidWhite, solidBlack)
 	assert.Equal(t, white, p.At(NewPoint(0, 0, 0)))
 	assert.Equal(t, white, p.At(NewPoint(0, 0, 1)))
 	assert.Equal(t, white, p.At(NewPoint(0, 0, 2)))
 
 	// alternates in X
-	p = NewStripePattern(white, black)
+	p = NewStripePattern(solidWhite, solidBlack)
 	assert.Equal(t, white, p.At(NewPoint(0, 0, 0)))
 	assert.Equal(t, white, p.At(NewPoint(.9, 0, 0)))
 	assert.Equal(t, black, p.At(NewPoint(1, 0, 0)))
@@ -116,7 +119,7 @@ func TestStripePattern_At(t *testing.T) {
 }
 
 func TestGradientPattern_At(t *testing.T) {
-	p := NewGradientPattern(white, black)
+	p := NewGradientPattern(solidWhite, solidBlack)
 	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
 	assert.True(t, p.At(NewPoint(.25, 0, 0)).Equals(NewColor(.75, .75, .75)))
 	assert.True(t, p.At(NewPoint(.5, 0, 0)).Equals(NewColor(.5, .5, .5)))
@@ -124,7 +127,7 @@ func TestGradientPattern_At(t *testing.T) {
 }
 
 func TestRingPattern_At(t *testing.T) {
-	p := NewRingPattern(white, black)
+	p := NewRingPattern(solidWhite, solidBlack)
 	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
 	assert.True(t, p.At(NewPoint(1, 0, 0)).Equals(black))
 	assert.True(t, p.At(NewPoint(0, 0, 1)).Equals(black))
@@ -132,7 +135,7 @@ func TestRingPattern_At(t *testing.T) {
 }
 
 func TestCheckerPattern_At(t *testing.T) {
-	p := NewCheckerPattern(white, black)
+	p := NewCheckerPattern(solidWhite, solidBlack)
 	assert.True(t, p.At(NewPoint(0, 0, 0)).Equals(white))
 	assert.True(t, p.At(NewPoint(.99, 0, 0)).Equals(white))
 	assert.True(t, p.At(NewPoint(1.01, 0, 0)).Equals(black))

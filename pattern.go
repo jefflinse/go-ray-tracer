@@ -18,14 +18,14 @@ type Pattern interface {
 
 // PatternProps contains properties common to all patterns.
 type PatternProps struct {
-	A         Color
-	B         Color
+	A         Pattern
+	B         Pattern
 	Transform Transformation
 	p         Pattern
 }
 
 // NewPatternProps creates a new PatternProps.
-func NewPatternProps(a Color, b Color) PatternProps {
+func NewPatternProps(a Pattern, b Pattern) PatternProps {
 	return PatternProps{
 		A:         a,
 		B:         b,
@@ -48,6 +48,24 @@ func (props *PatternProps) AtObject(object Shape, worldPoint Tuple) Color {
 	localPoint := object.GetTransform().Inverse().ApplyTo(worldPoint)
 	patternPoint := props.p.GetTransform().Inverse().ApplyTo(localPoint)
 	return props.p.At(patternPoint)
+}
+
+// A SolidPattern is just a single color.
+type SolidPattern struct {
+	PatternProps
+	color Color
+}
+
+// NewSolidPattern creates a new SolidPattern.
+func NewSolidPattern(color Color) *SolidPattern {
+	pattern := &SolidPattern{NewPatternProps(nil, nil), color}
+	pattern.p = pattern
+	return pattern
+}
+
+// At returns the pattern color at the given point.
+func (p *SolidPattern) At(point Tuple) Color {
+	return p.color
 }
 
 // A BlendedPattern is blended combination of two other patterns.
@@ -85,7 +103,7 @@ type StripePattern struct {
 }
 
 // NewStripePattern creates a new StripePattern.
-func NewStripePattern(a Color, b Color) *StripePattern {
+func NewStripePattern(a Pattern, b Pattern) *StripePattern {
 	pattern := &StripePattern{NewPatternProps(a, b)}
 	pattern.p = pattern
 	return pattern
@@ -94,10 +112,10 @@ func NewStripePattern(a Color, b Color) *StripePattern {
 // At returns the pattern color at the given point.
 func (p *StripePattern) At(point Tuple) Color {
 	if int(math.Floor(point.X()))%2 == 0 {
-		return p.A
+		return p.A.At(point)
 	}
 
-	return p.B
+	return p.B.At(point)
 }
 
 // A GradientPattern is a pattern that fades from one color to another.
@@ -106,7 +124,7 @@ type GradientPattern struct {
 }
 
 // NewGradientPattern creates a new GradientPattern.
-func NewGradientPattern(a Color, b Color) *GradientPattern {
+func NewGradientPattern(a Pattern, b Pattern) *GradientPattern {
 	pattern := &GradientPattern{NewPatternProps(a, b)}
 	pattern.p = pattern
 	return pattern
@@ -114,9 +132,9 @@ func NewGradientPattern(a Color, b Color) *GradientPattern {
 
 // At returns the pattern color at the given point.
 func (p *GradientPattern) At(point Tuple) Color {
-	distance := p.B.Subtract(p.A)
+	distance := p.B.At(point).Subtract(p.A.At(point))
 	fraction := point.X() - math.Floor(point.X())
-	return p.A.Add(distance.Multiply(fraction))
+	return p.A.At(point).Add(distance.Multiply(fraction))
 }
 
 // A RingPattern is a pattern of alternating rings of color.
@@ -125,7 +143,7 @@ type RingPattern struct {
 }
 
 // NewRingPattern creates a new RingPattern.
-func NewRingPattern(a Color, b Color) *RingPattern {
+func NewRingPattern(a Pattern, b Pattern) *RingPattern {
 	pattern := &RingPattern{NewPatternProps(a, b)}
 	pattern.p = pattern
 	return pattern
@@ -134,10 +152,10 @@ func NewRingPattern(a Color, b Color) *RingPattern {
 // At returns the pattern color at the given point.
 func (p *RingPattern) At(point Tuple) Color {
 	if int(math.Floor(math.Sqrt(math.Pow(point.X(), 2)+math.Pow(point.Z(), 2))))%2 == 0 {
-		return p.A
+		return p.A.At(point)
 	}
 
-	return p.B
+	return p.B.At(point)
 }
 
 // A CheckerPattern is a pattern of alternating colors in all dimensions.
@@ -146,7 +164,7 @@ type CheckerPattern struct {
 }
 
 // NewCheckerPattern creates a new RingPattern.
-func NewCheckerPattern(a Color, b Color) *CheckerPattern {
+func NewCheckerPattern(a Pattern, b Pattern) *CheckerPattern {
 	pattern := &CheckerPattern{NewPatternProps(a, b)}
 	pattern.p = pattern
 	return pattern
@@ -155,8 +173,8 @@ func NewCheckerPattern(a Color, b Color) *CheckerPattern {
 // At returns the pattern color at the given point.
 func (p *CheckerPattern) At(point Tuple) Color {
 	if (int(math.Floor(point.X()))+int(math.Floor(point.Y()))+int(math.Floor(point.Z())))%2 == 0 {
-		return p.A
+		return p.A.At(point)
 	}
 
-	return p.B
+	return p.B.At(point)
 }

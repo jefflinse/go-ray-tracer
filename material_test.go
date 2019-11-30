@@ -84,7 +84,7 @@ func TestMaterial_Lighting(t *testing.T) {
 
 	// lighting with a pattern applied
 	m = NewMaterial()
-	m.Pattern = NewStripePattern(NewColor(1, 1, 1), NewColor(0, 0, 0))
+	m.Pattern = NewStripePattern(solidWhite, solidBlack)
 	m.Ambient = 1
 	m.Diffuse = 0
 	m.Specular = 0
