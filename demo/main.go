@@ -10,14 +10,22 @@ import (
 func main() {
 	floor := rt.NewPlane()
 	floor.Material = rt.NewMaterial()
-	floor.Material.Color = rt.NewColor(1, .9, .9)
+	// floor.Material.Color = rt.NewColor(1, .9, .9)
+	innerStripe := rt.NewStripePattern(
+		rt.NewSolidPattern(rt.NewColor(.5, .5, .5)),
+		rt.NewSolidPattern(rt.NewColor(0, 0, 0)),
+	)
+	innerStripe.SetTransform(rt.NewTransform().RotateY(math.Pi/4).Scale(.5, .5, .5))
+	floor.Material.Pattern = rt.NewBlendedPattern(
+		rt.NewSolidPattern(rt.NewColor(1, 0, 0)),
+		innerStripe,
+	)
 	floor.Material.Specular = 0
 
 	middle := rt.NewSphere()
 	middle.Transform = rt.NewTransform().Translate(-.5, 1, .5)
 	middle.Material = rt.NewMaterial()
 	middle.Material.Color = rt.NewColor(.1, 1, .5)
-	middle.Material.Pattern = rt.NewGradientPattern(rt.NewColor(1, 0, 0), rt.NewColor(0, 0, 1))
 	middle.Material.Diffuse = .7
 	middle.Material.Specular = .3
 
