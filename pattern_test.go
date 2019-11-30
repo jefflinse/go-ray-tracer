@@ -79,7 +79,7 @@ func TestBlendedPattern_AtObject(t *testing.T) {
 	p = NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	p.SetTransform(NewScaling(2, 2, 2))
 	c = p.AtObject(o, NewPoint(2, 3, 4))
-	assert.Equal(t, NewColor(1.5, 2.25, 3), c)
+	assert.Equal(t, NewColor(2, 3, 4), c)
 
 	// with both object and pattern transformations
 	o = NewSphere()
@@ -87,7 +87,7 @@ func TestBlendedPattern_AtObject(t *testing.T) {
 	p = NewBlendedPattern(newTestPattern(solidWhite, solidBlack), newTestPattern(solidWhite, solidBlack))
 	p.SetTransform(NewTranslation(.5, 1, 1.5))
 	c = p.AtObject(o, NewPoint(2.5, 3, 3.5))
-	assert.Equal(t, NewColor(1, 1, 1), c)
+	assert.Equal(t, NewColor(1.25, 1.5, 1.75), c)
 }
 
 func TestBlendedPattern_At(t *testing.T) {

@@ -14,6 +14,8 @@ type Pattern interface {
 	AtObject(object Shape, point Tuple) Color
 	GetTransform() Transformation
 	SetTransform(transform Transformation)
+	atA(parentPatternPoint Tuple) Color
+	atB(parentPatternPoint Tuple) Color
 }
 
 // PatternProps contains properties common to all patterns.
@@ -48,6 +50,16 @@ func (props *PatternProps) AtObject(object Shape, worldPoint Tuple) Color {
 	localPoint := object.GetTransform().Inverse().ApplyTo(worldPoint)
 	patternPoint := props.p.GetTransform().Inverse().ApplyTo(localPoint)
 	return props.p.At(patternPoint)
+}
+
+// Returns the color at subpattern A by first applying its transformation.
+func (props *PatternProps) atA(parentPatternPoint Tuple) Color {
+	return props.A.At(props.A.GetTransform().Inverse().ApplyTo(parentPatternPoint))
+}
+
+// Returns the color at subpattern B by first applying its transformation.
+func (props *PatternProps) atB(parentPatternPoint Tuple) Color {
+	return props.B.At(props.B.GetTransform().Inverse().ApplyTo(parentPatternPoint))
 }
 
 // A SolidPattern is just a single color.
@@ -87,8 +99,8 @@ func (p *BlendedPattern) AtObject(object Shape, worldPoint Tuple) Color {
 	localPoint := object.GetTransform().Inverse().ApplyTo(worldPoint)
 	patternPointA := p.patternA.GetTransform().Inverse().ApplyTo(localPoint)
 	colorA := p.patternA.At(patternPointA)
-	patternPointB := p.GetTransform().Inverse().ApplyTo(localPoint)
-	colorB := p.patternA.At(patternPointB)
+	patternPointB := p.patternB.GetTransform().Inverse().ApplyTo(localPoint)
+	colorB := p.patternB.At(patternPointB)
 	return colorA.AverageBlend(colorB)
 }
 
@@ -112,10 +124,10 @@ func NewStripePattern(a Pattern, b Pattern) *StripePattern {
 // At returns the pattern color at the given point.
 func (p *StripePattern) At(point Tuple) Color {
 	if int(math.Floor(point.X()))%2 == 0 {
-		return p.A.At(point)
+		return p.atA(point)
 	}
 
-	return p.B.At(point)
+	return p.atB(point)
 }
 
 // A GradientPattern is a pattern that fades from one color to another.
@@ -132,9 +144,11 @@ func NewGradientPattern(a Pattern, b Pattern) *GradientPattern {
 
 // At returns the pattern color at the given point.
 func (p *GradientPattern) At(point Tuple) Color {
-	distance := p.B.At(point).Subtract(p.A.At(point))
+	atA := p.atA(point)
+	atB := p.atB(point)
+	distance := atB.Subtract(atA)
 	fraction := point.X() - math.Floor(point.X())
-	return p.A.At(point).Add(distance.Multiply(fraction))
+	return atA.Add(distance.Multiply(fraction))
 }
 
 // A RingPattern is a pattern of alternating rings of color.
@@ -152,10 +166,10 @@ func NewRingPattern(a Pattern, b Pattern) *RingPattern {
 // At returns the pattern color at the given point.
 func (p *RingPattern) At(point Tuple) Color {
 	if int(math.Floor(math.Sqrt(math.Pow(point.X(), 2)+math.Pow(point.Z(), 2))))%2 == 0 {
-		return p.A.At(point)
+		return p.atA(point)
 	}
 
-	return p.B.At(point)
+	return p.atB(point)
 }
 
 // A CheckerPattern is a pattern of alternating colors in all dimensions.
@@ -173,8 +187,10 @@ func NewCheckerPattern(a Pattern, b Pattern) *CheckerPattern {
 // At returns the pattern color at the given point.
 func (p *CheckerPattern) At(point Tuple) Color {
 	if (int(math.Floor(point.X()))+int(math.Floor(point.Y()))+int(math.Floor(point.Z())))%2 == 0 {
-		return p.A.At(point)
+		subpatternPoint := p.A.GetTransform().Inverse().ApplyTo(point)
+		return p.A.At(subpatternPoint)
 	}
 
-	return p.B.At(point)
+	subpatternPoint := p.B.GetTransform().Inverse().ApplyTo(point)
+	return p.B.At(subpatternPoint)
 }
