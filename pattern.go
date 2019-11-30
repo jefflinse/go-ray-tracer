@@ -83,30 +83,20 @@ func (p *SolidPattern) At(point Tuple) Color {
 // A BlendedPattern is blended combination of two other patterns.
 type BlendedPattern struct {
 	PatternProps
-	patternA Pattern
-	patternB Pattern
 }
 
 // NewBlendedPattern creates a new BlendedPatter.
 func NewBlendedPattern(a Pattern, b Pattern) *BlendedPattern {
-	pattern := &BlendedPattern{NewPatternProps(nil, nil), a, b}
+	pattern := &BlendedPattern{NewPatternProps(a, b)}
 	pattern.p = pattern
 	return pattern
 }
 
-// AtObject returns the pattern color on the specified object at the specified point.
-func (p *BlendedPattern) AtObject(object Shape, worldPoint Tuple) Color {
-	localPoint := object.GetTransform().Inverse().ApplyTo(worldPoint)
-	patternPointA := p.patternA.GetTransform().Inverse().ApplyTo(localPoint)
-	colorA := p.patternA.At(patternPointA)
-	patternPointB := p.patternB.GetTransform().Inverse().ApplyTo(localPoint)
-	colorB := p.patternB.At(patternPointB)
-	return colorA.AverageBlend(colorB)
-}
-
 // At returns the pattern color at the given point.
 func (p *BlendedPattern) At(point Tuple) Color {
-	return nil
+	colorA := p.atA(point)
+	colorB := p.atB(point)
+	return colorA.AverageBlend(colorB)
 }
 
 // A StripePattern is a pattern of colors alternates in the X axis.
