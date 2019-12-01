@@ -55,12 +55,25 @@ func (c *Camera) RayForPixel(x int, y int) *Ray {
 
 // Render renders the specified world.
 func (c *Camera) Render(world *World) *Canvas {
+	pixelDoneCh := make(chan int)
 	image := NewCanvas(c.HSize, c.VSize)
 	for y := 0; y < c.VSize; y++ {
 		for x := 0; x < c.HSize; x++ {
-			ray := c.RayForPixel(x, y)
-			color := world.ColorAt(ray)
-			image.WritePixel(x, y, color)
+			// compute the pixels in parallel
+			go func(x, y int) {
+				ray := c.RayForPixel(x, y)
+				color := world.ColorAt(ray)
+				image.WritePixel(x, y, color)
+				pixelDoneCh <- 1
+			}(x, y)
+		}
+	}
+
+	// wait for all pixels to be written
+	for pixelsWritten := 0; pixelsWritten < c.HSize*c.VSize; {
+		select {
+		case <-pixelDoneCh:
+			pixelsWritten++
 		}
 	}
 
